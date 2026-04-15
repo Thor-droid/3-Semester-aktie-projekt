@@ -1,1 +1,22 @@
+# Build
+bin/
+obj/
 
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
