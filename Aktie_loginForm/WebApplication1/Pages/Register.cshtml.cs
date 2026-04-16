@@ -32,8 +32,8 @@ namespace Aktie_Website.Pages
 
                 string sql = "INSERT INTO Customers (Email, CustomerName, Password) VALUES (@Email, @Name, @Password)";
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Email", Email);
                 cmd.Parameters.AddWithValue("@Name", Name);
+                cmd.Parameters.AddWithValue("@Email", Email);
                 cmd.Parameters.AddWithValue("@Password", Password);
 
                 int rowsAffected = cmd.ExecuteNonQuery();
