@@ -15,6 +15,36 @@ namespace Aktie_WebsiteMVCV2.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Login(string email, string password)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string sql = "SELECT CustomerId, Email, Password FROM Customers WHERE Email = @Email AND Password = @Password";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@Password", password);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    int customerId = (int)reader["CustomerId"];
+
+                    // TODO: later we will store login in session/cookie
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Forkert email eller password";
+                    return View();
+                }
+            }
+        }
+    
 
         // ---------------- REGISTER (GET) ----------------
         [HttpGet]
