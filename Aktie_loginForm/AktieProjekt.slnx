@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Aktie_loginForm/Aktie_loginForm.csproj" />
+  <Project Path="Aktie_WebAPI/Aktie_WebAPI.csproj" Id="8a849c79-753d-450b-9938-460dbbefb48f" />
   <Project Path="Aktie_WebsiteMVCV2/Aktie_WebsiteMVCV2.csproj" Id="6bfeb8da-2655-406c-a15d-1d978aad574b" />
 </Solution>

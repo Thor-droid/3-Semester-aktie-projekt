@@ -1,14 +1,15 @@
 ﻿using Aktie_WebsiteMVCV2.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
     public class AccountController : Controller
     {
-        private string connectionString =
-            "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;Trust Server Certificate=True";
+        private string apiUrl = "https://localhost:7120/api/auth";
 
+        // ---------------- LOGIN ----------------
         [HttpGet]
         public IActionResult Login()
         {
@@ -16,88 +17,45 @@ namespace Aktie_WebsiteMVCV2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(LoginModel model)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using var client = new HttpClient();
+
+            var response = await client.PostAsJsonAsync($"{apiUrl}/login", model);
+
+            if (response.IsSuccessStatusCode)
             {
-                conn.Open();
-
-                string sql = @"
-                    SELECT KundeID, KundeNavn
-                    FROM Customers
-                    WHERE Email = @Email AND PasswordHash = @Password";
-
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@Password", password);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-
-                ViewBag.ErrorMessage = "Forkert email eller password";
-                return View();
+                return RedirectToAction("Index", "Home");
             }
+
+            ViewBag.ErrorMessage = "Forkert email eller password";
+            return View();
         }
 
+        // ---------------- REGISTER ----------------
         [HttpGet]
         public IActionResult Register()
         {
-            return View(new RegisterViewModel());
+            return View();
         }
+
         [HttpPost]
-        public IActionResult Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
+
+            using var client = new HttpClient();
+
+            var response = await client.PostAsJsonAsync($"{apiUrl}/register", model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Login");
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                string checkSql = @"
-            SELECT KundeID
-            FROM Customers
-            WHERE Email = @Email OR KundeNavn = @Name";
-
-                SqlCommand checkCmd = new SqlCommand(checkSql, conn);
-                checkCmd.Parameters.AddWithValue("@Email", model.Email);
-                checkCmd.Parameters.AddWithValue("@Name", model.KundeNavn);
-
-                using (SqlDataReader reader = checkCmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        model.ErrorMessage = "Email eller kundenavn findes allerede.";
-                        return View(model);
-                    }
-                }
-
-                string insertSql = @"
-            INSERT INTO Customers (Email, KundeNavn, PasswordHash)
-            VALUES (@Email, @Name, @Password)";
-
-                SqlCommand cmd = new SqlCommand(insertSql, conn);
-                cmd.Parameters.AddWithValue("@Email", model.Email);
-                cmd.Parameters.AddWithValue("@Name", model.KundeNavn);
-                cmd.Parameters.AddWithValue("@Password", model.Password);
-
-                int rows = cmd.ExecuteNonQuery();
-
-                if (rows > 0)
-                {
-                    return RedirectToAction("Login");
-                }
-
-                model.ErrorMessage = "Brugeren blev ikke oprettet.";
-                return View(model);
-            }
+            model.ErrorMessage = "Bruger kunne ikke oprettes";
+            return View(model);
         }
     }
 }
