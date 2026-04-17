@@ -13,25 +13,27 @@ namespace Aktie_WebsiteMVCV2.Controllers.Api
         [HttpGet]
         public IActionResult GetCustomers()
         {
-            List<object> customers = new List<object>();
+            List<object> customers = new();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                string sql = "SELECT CustomerId, Email FROM Customers";
+                string sql = "SELECT KundeID, Email, KundeNavn FROM Customers";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    customers.Add(new
+                    while (reader.Read())
                     {
-                        CustomerId = reader["CustomerId"],
-                        Email = reader["Email"]
-                    });
+                        customers.Add(new
+                        {
+                            KundeID = reader["KundeID"],
+                            Email = reader["Email"],
+                            KundeNavn = reader["KundeNavn"]
+                        });
+                    }
                 }
             }
 

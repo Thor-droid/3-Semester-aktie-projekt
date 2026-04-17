@@ -9,21 +9,27 @@
 
         <h3 class="text-center mb-4">Opret Bruger</h3>
 
-        <form asp-action="Register" method="post">
+        <form asp-action="Register" asp-controller="Account" method="post">
+
+            <!-- 🔥 VISER ALLE VALIDATION FEJL -->
+            <div class="text-danger" asp-validation-summary="All"></div>
 
             <div class="mb-3">
                 <label>KundeNavn</label>
                 <input asp-for="KundeNavn" class="form-control" />
+                <span asp-validation-for="KundeNavn" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label>Email</label>
                 <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label>Password</label>
                 <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">
@@ -36,9 +42,14 @@
 
         </form>
 
+        <!-- 🔴 DINE MANUELLE FEJL -->
         <span class="text-danger">
             @Model?.ErrorMessage
         </span>
 
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

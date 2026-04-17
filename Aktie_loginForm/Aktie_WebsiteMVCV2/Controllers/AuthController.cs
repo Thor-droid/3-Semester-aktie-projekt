@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aktie_WebsiteMVCV2.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Aktie_WebsiteMVCV2.Models;
 
 namespace Aktie_WebsiteMVCV2.Controllers.Api
 {
@@ -9,7 +9,7 @@ namespace Aktie_WebsiteMVCV2.Controllers.Api
     public class AuthController : ControllerBase
     {
         private string connectionString =
-            "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;TrustServerCertificate=True";
+            "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;Trust Server Certificate=True";
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel model)
@@ -19,32 +19,33 @@ namespace Aktie_WebsiteMVCV2.Controllers.Api
                 conn.Open();
 
                 string sql = @"
-            SELECT KundeID, KundeNavn, PasswordHash
-            FROM Customers
-            WHERE Email = @Email";
+                    SELECT KundeID, KundeNavn, PasswordHash
+                    FROM Customers
+                    WHERE Email = @Email";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Email", model.Email);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    string dbPassword = reader["PasswordHash"].ToString();
-
-                    if (dbPassword == model.Password)
+                    if (reader.Read())
                     {
-                        return Ok(new
+                        string dbPassword = reader["PasswordHash"].ToString();
+
+                        if (dbPassword == model.Password)
                         {
-                            success = true,
-                            kundeId = reader["KundeID"],
-                            name = reader["KundeNavn"]
-                        });
+                            return Ok(new
+                            {
+                                success = true,
+                                kundeId = reader["KundeID"],
+                                name = reader["KundeNavn"]
+                            });
+                        }
                     }
                 }
-
-                return Unauthorized(new { success = false });
             }
+
+            return Unauthorized(new { success = false });
         }
     }
 }
