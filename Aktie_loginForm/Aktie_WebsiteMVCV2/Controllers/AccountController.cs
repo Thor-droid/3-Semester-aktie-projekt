@@ -1,6 +1,17 @@
-﻿namespace Aktie_WebsiteMVCV2.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Aktie_WebsiteMVCV2.Controllers
 {
-    public class AccountController
+    public class AccountController : Controller
     {
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
     }
 }
