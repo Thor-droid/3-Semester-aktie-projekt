@@ -1,4 +1,4 @@
-﻿namespace Aktie_WebisteMVCV2.Models
+﻿namespace Aktie_WebsiteMVCV2.Models
 {
     public class LoginModel
     {

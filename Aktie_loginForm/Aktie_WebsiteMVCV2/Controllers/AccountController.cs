@@ -25,8 +25,8 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 conn.Open();
 
                 string sql = @"
-                    SELECT KundeID 
-                    FROM Customers 
+                    SELECT KundeID, KundeNavn
+                    FROM Customers
                     WHERE Email = @Email AND PasswordHash = @Password";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -57,45 +57,45 @@ namespace Aktie_WebsiteMVCV2.Controllers
         public IActionResult Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                // TJEK OM BRUGER FINDES
                 string checkSql = @"
-                    SELECT 1 
-                    FROM Customers 
-                    WHERE Email = @Email OR KundeNavn = @Name";
+            SELECT 1 
+            FROM Customers 
+            WHERE Email = @Email OR KundeNavn = @Name";
 
                 SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                 checkCmd.Parameters.AddWithValue("@Email", model.Email);
-                checkCmd.Parameters.AddWithValue("@Name", model.Name);
+                checkCmd.Parameters.AddWithValue("@Name", model.KundeNavn);
 
                 var exists = checkCmd.ExecuteScalar();
 
                 if (exists != null)
                 {
-                    model.ErrorMessage = "Email eller brugernavn findes allerede.";
+                    model.ErrorMessage = "Bruger findes allerede.";
                     return View(model);
                 }
 
-                // INSERT USER (PLAIN PASSWORD)
                 string sql = @"
-                    INSERT INTO Customers (Email, KundeNavn, PasswordHash)
-                    VALUES (@Email, @Name, @Password)";
+            INSERT INTO Customers (Email, KundeNavn, PasswordHash)
+            VALUES (@Email, @Name, @Password)";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Email", model.Email);
-                cmd.Parameters.AddWithValue("@Name", model.Name);
+                cmd.Parameters.AddWithValue("@Name", model.KundeNavn);
                 cmd.Parameters.AddWithValue("@Password", model.Password);
 
-                cmd.ExecuteNonQuery();
+                int rows = cmd.ExecuteNonQuery();
 
-                return RedirectToAction("Login");
+                if (rows > 0)
+                    return RedirectToAction("Login");
+
+                model.ErrorMessage = "Fejl ved oprettelse.";
+                return View(model);
             }
         }
     }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Aktie_WebisteMVCV2.Models;
+using Aktie_WebsiteMVCV2.Models;
 
-namespace Aktie_WebisteMVCV2.Controllers
+namespace Aktie_WebsiteMVCV2.Controllers.Api
 {
     [ApiController]
     [Route("api/auth")]
@@ -18,20 +18,32 @@ namespace Aktie_WebisteMVCV2.Controllers
             {
                 conn.Open();
 
-                string sql = "SELECT CustomerId FROM Customers WHERE Email = @Email AND Password = @Password";
+                string sql = @"
+            SELECT KundeID, KundeNavn, PasswordHash
+            FROM Customers
+            WHERE Email = @Email";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Email", model.Email);
-                cmd.Parameters.AddWithValue("@Password", model.Password);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    return Ok(new { success = true });
+                    string dbPassword = reader["PasswordHash"].ToString();
+
+                    if (dbPassword == model.Password)
+                    {
+                        return Ok(new
+                        {
+                            success = true,
+                            kundeId = reader["KundeID"],
+                            name = reader["KundeNavn"]
+                        });
+                    }
                 }
 
-                return Unauthorized();
+                return Unauthorized(new { success = false });
             }
         }
     }
