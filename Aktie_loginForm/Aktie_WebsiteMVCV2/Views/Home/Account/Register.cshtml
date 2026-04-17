@@ -1,4 +1,44 @@
-﻿@page
-@model Aktie_WebsiteMVCV2.Views.Account.RegisterModel
+﻿@model Aktie_WebsiteMVCV2.Models.RegisterViewModel
+
 @{
+    ViewData["Title"] = "Opret Bruger";
 }
+
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div style="min-width: 350px; max-width: 400px; width: 100%;">
+
+        <h3 class="text-center mb-4">Opret Bruger</h3>
+
+        <form asp-action="Register" method="post">
+
+            <div class="mb-3">
+                <label>Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Opret
+            </button>
+
+            <a asp-action="Login" class="btn btn-secondary w-100 mt-2">
+                Tilbage til login
+            </a>
+
+        </form>
+
+        <span class="text-danger">
+            @Model?.ErrorMessage
+        </span>
+
+    </div>
+</div>
