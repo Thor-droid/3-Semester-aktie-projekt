@@ -26,10 +26,32 @@ namespace Aktie_Website.Pages
 
         public IActionResult OnPost()
         {
+            if (string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+            {
+                ErrorMessage = "Email skal indeholde @";
+                return Page();
+            }
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
+                // Tjek om email eller navn findes
+                string checkSql = "SELECT COUNT(*) FROM Customers WHERE Email = @Email OR CustomerName = @Name";
+                SqlCommand checkCmd = new SqlCommand(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@Email", Email);
+                checkCmd.Parameters.AddWithValue("@Name", Name);
+
+                int count = (int)checkCmd.ExecuteScalar();
+
+                if (count > 0)
+                {
+                    ErrorMessage = "Email eller brugernavn findes allerede.";
+                    return Page();
+                }
+
+
+                // Insert bruger i databasen
                 string sql = "INSERT INTO Customers (Email, CustomerName, Password) VALUES (@Email, @Name, @Password)";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Name", Name);
