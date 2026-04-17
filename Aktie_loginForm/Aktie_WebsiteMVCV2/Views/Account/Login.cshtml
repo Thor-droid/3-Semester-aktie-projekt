@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="p-3 shadow" style="min-width: 350px; max-width: 400px; width: 100%;">
+
+        <h3 class="text-center mb-4">Login</h3>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" />
+            </div>
+
+            <button class="btn btn-primary w-100">Login</button>
+
+            <span class="text-danger">
+                @ViewBag.ErrorMessage
+            </span>
+
+        </form>
+
+    </div>
+</div>
