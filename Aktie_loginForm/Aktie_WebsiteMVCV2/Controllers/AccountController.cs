@@ -9,12 +9,14 @@ namespace Aktie_WebsiteMVCV2.Controllers
         private string connectionString =
             "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;Trust Server Certificate=True";
 
-        // ---------------- LOGIN ----------------
+        // ---------------- LOGIN (GET) ----------------
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
+        // ---------------- LOGIN (POST) ----------------
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
@@ -22,7 +24,10 @@ namespace Aktie_WebsiteMVCV2.Controllers
             {
                 conn.Open();
 
-                string sql = "SELECT CustomerId, Email, Password FROM Customers WHERE Email = @Email AND Password = @Password";
+                string sql = @"
+                    SELECT KundeID 
+                    FROM Customers 
+                    WHERE Email = @Email AND PasswordHash = @Password";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Email", email);
@@ -32,19 +37,13 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
                 if (reader.Read())
                 {
-                    int customerId = (int)reader["CustomerId"];
-
-                    // TODO: later we will store login in session/cookie
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                {
-                    ViewBag.ErrorMessage = "Forkert email eller password";
-                    return View();
-                }
+
+                ViewBag.ErrorMessage = "Forkert email eller password";
+                return View();
             }
         }
-    
 
         // ---------------- REGISTER (GET) ----------------
         [HttpGet]
@@ -66,11 +65,11 @@ namespace Aktie_WebsiteMVCV2.Controllers
             {
                 conn.Open();
 
-                // Tjek om email eller navn findes
+                // TJEK OM BRUGER FINDES
                 string checkSql = @"
                     SELECT 1 
                     FROM Customers 
-                    WHERE Email = @Email OR CustomerName = @Name";
+                    WHERE Email = @Email OR KundeNavn = @Name";
 
                 SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                 checkCmd.Parameters.AddWithValue("@Email", model.Email);
@@ -84,9 +83,9 @@ namespace Aktie_WebsiteMVCV2.Controllers
                     return View(model);
                 }
 
-                // INSERT bruger
+                // INSERT USER (PLAIN PASSWORD)
                 string sql = @"
-                    INSERT INTO Customers (Email, CustomerName, Password)
+                    INSERT INTO Customers (Email, KundeNavn, PasswordHash)
                     VALUES (@Email, @Name, @Password)";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -94,15 +93,9 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 cmd.Parameters.AddWithValue("@Name", model.Name);
                 cmd.Parameters.AddWithValue("@Password", model.Password);
 
-                int rowsAffected = cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-                if (rowsAffected > 0)
-                {
-                    return RedirectToAction("Login");
-                }
-
-                model.ErrorMessage = "Der opstod en fejl under oprettelsen.";
-                return View(model);
+                return RedirectToAction("Login");
             }
         }
     }
