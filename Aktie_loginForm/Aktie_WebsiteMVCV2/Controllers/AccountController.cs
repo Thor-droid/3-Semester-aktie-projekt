@@ -1,7 +1,10 @@
 ﻿using Aktie_WebsiteMVCV2.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Claims;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
@@ -25,6 +28,19 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, model.Email)
+        };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal
+                );
+
                 return RedirectToAction("Index", "Home");
             }
 
