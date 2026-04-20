@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
 
@@ -11,14 +10,30 @@ namespace Aktie_WebsiteMVCV2.Controllers
 {
     public class AccountController : Controller
     {
-        private string apiUrl = "https://localhost:7120/api/auth";
+        private string authApiUrl = "https://localhost:7120/api/auth";
+        private string stockApiUrl = "https://localhost:7120/api/stock";
 
         // ---------------- AKTIEVIEW ----------------
         [HttpGet]
         [Authorize]
-        public IActionResult AktieView()
+        public async Task<IActionResult> AktieView(string symbol)
         {
-            return View();
+            if (string.IsNullOrEmpty(symbol))
+                return View();
+
+            using var client = new HttpClient();
+
+            var response = await client.GetAsync($"{stockApiUrl}/{symbol}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = "Aktie ikke fundet";
+                return View();
+            }
+
+            var stock = await response.Content.ReadFromJsonAsync<GlobalQuote>();
+
+            return View(stock);
         }
 
         // ---------------- LOGIN ----------------
@@ -33,14 +48,14 @@ namespace Aktie_WebsiteMVCV2.Controllers
         {
             using var client = new HttpClient();
 
-            var response = await client.PostAsJsonAsync($"{apiUrl}/login", model);
+            var response = await client.PostAsJsonAsync($"{authApiUrl}/login", model);
 
             if (response.IsSuccessStatusCode)
             {
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, model.Email)
-        };
+                {
+                    new Claim(ClaimTypes.Name, model.Email)
+                };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
@@ -72,7 +87,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
             using var client = new HttpClient();
 
-            var response = await client.PostAsJsonAsync($"{apiUrl}/register", model);
+            var response = await client.PostAsJsonAsync($"{authApiUrl}/register", model);
 
             if (response.IsSuccessStatusCode)
             {

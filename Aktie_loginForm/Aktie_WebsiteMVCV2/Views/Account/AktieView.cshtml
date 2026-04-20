@@ -1,6 +1,28 @@
-﻿@{
+﻿@model Aktie_WebsiteMVCV2.Models.GlobalQuote
+
+@{
     ViewData["Title"] = "Aktier";
 }
+
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to search for stocks.</p>
+<p>Søg efter en aktie og se kursen lige nu</p>
+
+<form method="get" asp-action="AktieView" asp-controller="Account">
+    <input type="text" name="symbol" placeholder="Skriv symbol, fx AAPL" />
+    <button type="submit">Søg</button>
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+@if (Model != null)
+{
+    <hr />
+    <h2>Resultat</h2>
+    <p><strong>Symbol:</strong> @Model.Symbol</p>
+    <p><strong>Kurs:</strong> @Model.Price</p>
+    <p><strong>Ændring:</strong> @Model.ChangePercent</p>
+}
