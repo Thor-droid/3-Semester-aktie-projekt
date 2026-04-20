@@ -50,7 +50,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
                     principal
                 );
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("AktieView", "Account");
             }
 
             ViewBag.ErrorMessage = "Forkert email eller password";
