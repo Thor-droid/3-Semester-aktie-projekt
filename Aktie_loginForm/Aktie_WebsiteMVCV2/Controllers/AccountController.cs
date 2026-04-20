@@ -1,4 +1,5 @@
 ﻿using Aktie_WebsiteMVCV2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -8,6 +9,14 @@ namespace Aktie_WebsiteMVCV2.Controllers
     public class AccountController : Controller
     {
         private string apiUrl = "https://localhost:7120/api/auth";
+
+        // ---------------- AKTIEVIEW ----------------
+        [HttpGet]
+        [Authorize]
+        public IActionResult AktieView()
+        {
+            return View();
+        }
 
         // ---------------- LOGIN ----------------
         [HttpGet]
