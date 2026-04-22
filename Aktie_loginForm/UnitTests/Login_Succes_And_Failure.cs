@@ -14,8 +14,8 @@ public class AuthControllerTests
 
         var model = new LoginModel
         {
-            Email = "existing@test.com",
-            Password = "correctpassword"
+            Email = "fisk@fisk.fisk",
+            Password = "fisk"
         };
 
         // Act
