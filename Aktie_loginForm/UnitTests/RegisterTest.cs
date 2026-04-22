@@ -19,7 +19,7 @@ namespace UnitTests
         [Fact]
         public async Task TestRegister()
         {
-            // Arrange
+            
             var model = new RegisterModel
             {
                 Email = "test" + Guid.NewGuid() + "@mail.com",
@@ -27,10 +27,10 @@ namespace UnitTests
                 Password = "123456"
             };
 
-            // Act
+            
             var response = await _client.PostAsJsonAsync("api/auth/register", model);
 
-            // Assert
+            // Laver Assert til at checke om det matcher
             Assert.True(
                 response.StatusCode == HttpStatusCode.OK ||
                 response.StatusCode == HttpStatusCode.BadRequest
