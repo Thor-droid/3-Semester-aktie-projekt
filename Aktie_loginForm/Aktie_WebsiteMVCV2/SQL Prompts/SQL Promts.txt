@@ -1,6 +1,74 @@
-﻿CREATE TABLE Customers (
+﻿
+CREATE TABLE Aktie (
+    AktieID INT IDENTITY(1,1) PRIMARY KEY,
+    Aktienavn VARCHAR(255),
+    Pris DECIMAL(10,2),
+    Ændring DECIMAL(10,2)
+);
+CREATE TABLE PrisHistorik (
+    PrisHistorikID INT IDENTITY(1,1) PRIMARY KEY,
+    AktieID INT,
+    Pris DECIMAL(10,2),
+    Tidspunkt DATETIME,
+
+    FOREIGN KEY (AktieID) REFERENCES Aktie(AktieID)
+);
+CREATE TABLE Aktiepakker (
+    AktiepakkeID INT IDENTITY(1,1) PRIMARY KEY,
+    PakkeNavn VARCHAR(255)
+);
+CREATE TABLE AktiepakkeAktie (
+    AktieID INT,
+    AktiepakkeID INT,
+    PRIMARY KEY (AktieID, AktiepakkeID),
+
+    FOREIGN KEY (AktieID) REFERENCES Aktie(AktieID),
+    FOREIGN KEY (AktiepakkeID) REFERENCES Aktiepakker(AktiepakkeID)
+);
+CREATE TABLE AktiepakkeAbonnement (
+    AktiepakkeID INT,
+    AbonnementID INT,
+    PRIMARY KEY (AktiepakkeID, AbonnementID),
+
+    FOREIGN KEY (AktiepakkeID) REFERENCES Aktiepakker(AktiepakkeID),
+    FOREIGN KEY (AbonnementID) REFERENCES Abonnement(AbonnementID)
+);
+CREATE TABLE Abonnement (
+    AbonnementID INT IDENTITY(1,1) PRIMARY KEY,
+    Dato DATETIME,
+    AbonnementNr VARCHAR(50),
+    KategoriID INT,
+    TransaktionsID INT,
+    KundeID INT,
+
+    FOREIGN KEY (KategoriID) REFERENCES Kategori(KategoriID),
+    FOREIGN KEY (TransaktionsID) REFERENCES Transactions(TransactionsID),
+    FOREIGN KEY (KundeID) REFERENCES Customers(KundeID)
+);
+CREATE TABLE Kategori (
+    KategoriID INT IDENTITY (1,1) PRIMARY KEY,
+    Størrelse VARCHAR(50),
+    MaxBrugere INT,
+    AbNavn VARCHAR(255),
+    PrisPrMd DECIMAL(10,2)
+);
+CREATE TABLE Transactions (
+    TransactionsID INT IDENTITY(1,1) PRIMARY KEY,
+    Dato DATETIME
+);
+CREATE TABLE Customers (
     KundeID INT IDENTITY(1,1) PRIMARY KEY,
-    KundeNavn VARCHAR(100) NOT NULL UNIQUE,
+    KundeNavn VARCHAR(255) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
     Email VARCHAR(255) NOT NULL UNIQUE,
-    PasswordHash VARCHAR(255) NOT NULL
+    AbonnementID INT,
+    FOREIGN KEY (AbonnementID) REFERENCES Abonnement(AbonnementID)
+);
+CREATE TABLE Notifikation (
+    NotifikationID INT IDENTITY(1,1) PRIMARY KEY,
+    Titel VARCHAR(255),
+    Besked TEXT,
+    KundeID INT,
+
+    FOREIGN KEY (KundeID) REFERENCES Customers(KundeID)
 );
