@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Abonnement";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Vælg en aktiepakke og simuler et køb</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <p style="color:green">@TempData["SuccessMessage"]</p>
+}
+
+<hr />
+
+<h2>Basis</h2>
+<p>Adgang til 5 aktier</p>
+<p><strong>49 kr / måned</strong></p>
+
+<form method="post" asp-action="Buy" asp-controller="Abonnement">
+    <input type="hidden" name="packageName" value="Basis" />
+    <input type="hidden" name="price" value="49 kr / måned" />
+    <button type="submit">Køb Basis</button>
+</form>
+
+<hr />
+
+<h2>Pro</h2>
+<p>Adgang til 25 aktier</p>
+<p><strong>99 kr / måned</strong></p>
+
+<form method="post" asp-action="Buy" asp-controller="Abonnement">
+    <input type="hidden" name="packageName" value="Pro" />
+    <input type="hidden" name="price" value="99 kr / måned" />
+    <button type="submit">Køb Pro</button>
+</form>
+
+<hr />
+
+<h2>Premium</h2>
+<p>Ubegrænset adgang til alle aktier</p>
+<p><strong>199 kr / måned</strong></p>
+
+<form method="post" asp-action="Buy" asp-controller="Abonnement">
+    <input type="hidden" name="packageName" value="Premium" />
+    <input type="hidden" name="price" value="199 kr / måned" />
+    <button type="submit">Køb Premium</button>
+</form>
