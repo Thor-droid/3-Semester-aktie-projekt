@@ -14,16 +14,15 @@ namespace UnitTests
             // Arrange
             var httpClient = new HttpClient();
 
+            Environment.SetEnvironmentVariable("AlphaVantage__ApiKey", "1U6ZNQU1PDOMSIXB");
+
             var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new[]
-                {
-                    new KeyValuePair<string, string>("AlphaVantage:ApiKey", "1U6ZNQU1PDOMSIXB")
-                })
-                .Build();
+            .AddEnvironmentVariables()
+            .Build();
 
             var service = new StockService(httpClient, config);
 
-            // Act
+            
             var result = await service.GetQuoteAsync("AAPL");
 
             // Assert
@@ -32,7 +31,7 @@ namespace UnitTests
 
             Assert.Equal("AAPL", result.GlobalQuote.Symbol);
 
-            // pris kan ikke være fast, fordi den ændrer sig hele tiden
+            // prisen ændrer sig hele tiden, så vi tjekker bare at den ikke er null eller tom
             Assert.False(string.IsNullOrEmpty(result.GlobalQuote.Price));
         }
     }
