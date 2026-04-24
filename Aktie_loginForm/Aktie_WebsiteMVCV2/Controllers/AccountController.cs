@@ -97,5 +97,14 @@ namespace Aktie_WebsiteMVCV2.Controllers
             model.ErrorMessage = "Bruger kunne ikke oprettes";
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Login");
+        }
     }
 }
