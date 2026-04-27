@@ -16,12 +16,12 @@ namespace Aktie_WebAPI.Controllers
         [HttpGet("{symbol}")]
         public async Task<IActionResult> Get(string symbol)
         {
-            var quote = await _stockService.GetQuoteAsync(symbol);
+            var stock = await _stockService.GetQuoteAsync(symbol);
 
-            if (quote == null || quote.GlobalQuote == null || string.IsNullOrEmpty(quote.GlobalQuote.Symbol))
+            if (stock == null || string.IsNullOrEmpty(stock.Symbol))
                 return NotFound("Aktien blev ikke fundet");
 
-            return Ok(quote.GlobalQuote);
+            return Ok(stock);
         }
     }
 }

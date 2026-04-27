@@ -42,7 +42,6 @@ namespace Aktie_WebsiteMVCV2.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
@@ -52,10 +51,13 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, model.Email)
-                };
+        {
+            new Claim(ClaimTypes.Name, result.Navn),
+            new Claim("KundeId", result.KundeId.ToString())
+        };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);

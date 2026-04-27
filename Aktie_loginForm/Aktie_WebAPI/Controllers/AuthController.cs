@@ -19,7 +19,6 @@ namespace Aktie_WebAPI.Controllers
             {
                 conn.Open();
 
-                // Check om bruger findes
                 string checkSql = @"
                     SELECT 1
                     FROM Customers
@@ -38,7 +37,6 @@ namespace Aktie_WebAPI.Controllers
                     }
                 }
 
-                // Opret bruger (AbonnementID = NULL ved start)
                 string insertSql = @"
                     INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID)
                     VALUES (@Email, @Name, @Password, NULL)";
@@ -81,12 +79,16 @@ namespace Aktie_WebAPI.Controllers
                     {
                         if (reader.Read())
                         {
+                            int? abonnementId = reader["AbonnementID"] == DBNull.Value
+                                ? null
+                                : Convert.ToInt32(reader["AbonnementID"]);
+
                             return Ok(new
                             {
                                 success = true,
-                                kundeId = reader["KundeID"],
-                                navn = reader["KundeNavn"],
-                                abonnementId = reader["AbonnementID"]
+                                kundeId = Convert.ToInt32(reader["KundeID"]),
+                                navn = reader["KundeNavn"].ToString(),
+                                abonnementId = abonnementId
                             });
                         }
                     }

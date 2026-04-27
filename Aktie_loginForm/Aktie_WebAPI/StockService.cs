@@ -1,5 +1,4 @@
-﻿using Aktie_WebAPI.Models;
-using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.Models;
 using System.Net.Http.Json;
 
 namespace Aktie_WebAPI
@@ -15,18 +14,29 @@ namespace Aktie_WebAPI
             _config = config;
         }
 
-        public async Task<StockQuoteResponse?> GetQuoteAsync(string symbol)
+        public async Task<GlobalQuote?> GetQuoteAsync(string symbol)
         {
-            string apiKey = _config["AlphaVantage:ApiKey"];
-            var url = $"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apiKey}";
+            string apiKey = _config["Finnhub:ApiKey"];
+            var url = $"https://finnhub.io/api/v1/quote?symbol={symbol}&token={apiKey}";
 
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            var result = await response.Content.ReadFromJsonAsync<StockQuoteResponse>();
-            return result;
+            // 🔥 Use FinnhubQuote HERE
+            var finnhub = await response.Content.ReadFromJsonAsync<FinnhubQuote>();
+
+            if (finnhub == null || finnhub.CurrentPrice == 0)
+                return null;
+
+            // 🔥 Convert to your own model
+            return new GlobalQuote
+            {
+                Symbol = symbol.ToUpper(),
+                Price = finnhub.CurrentPrice.ToString("F2"),
+                ChangePercent = finnhub.ChangePercent.ToString("F2") + "%"
+            };
         }
     }
 }

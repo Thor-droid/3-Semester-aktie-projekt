@@ -72,3 +72,7 @@ CREATE TABLE Notifikation (
 
     FOREIGN KEY (KundeID) REFERENCES Customers(KundeID)
 );
+
+Clear database ( til test )
+DELETE FROM AktiepakkeAbonnement;
+DELETE FROM Abonnement;

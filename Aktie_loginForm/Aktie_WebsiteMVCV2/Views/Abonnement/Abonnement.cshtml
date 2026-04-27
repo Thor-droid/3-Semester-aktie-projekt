@@ -4,11 +4,16 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<p>Vælg en aktiepakke og simuler et køb</p>
+<p>Vælg et abonnement for at få adgang til aktiepakker.</p>
 
 @if (TempData["SuccessMessage"] != null)
 {
     <p style="color:green">@TempData["SuccessMessage"]</p>
+}
+
+@if (TempData["Error"] != null)
+{
+    <p style="color:red">@TempData["Error"]</p>
 }
 
 <hr />
@@ -19,7 +24,6 @@
 
 <form method="post" asp-action="Buy" asp-controller="Abonnement">
     <input type="hidden" name="packageName" value="Basis" />
-    <input type="hidden" name="price" value="49 kr / måned" />
     <button type="submit">Køb Basis</button>
 </form>
 
@@ -31,7 +35,6 @@
 
 <form method="post" asp-action="Buy" asp-controller="Abonnement">
     <input type="hidden" name="packageName" value="Pro" />
-    <input type="hidden" name="price" value="89 kr / måned" />
     <button type="submit">Køb Pro</button>
 </form>
 
@@ -43,6 +46,5 @@
 
 <form method="post" asp-action="Buy" asp-controller="Abonnement">
     <input type="hidden" name="packageName" value="Premium" />
-    <input type="hidden" name="price" value="149 kr / måned" />
     <button type="submit">Køb Premium</button>
 </form>

@@ -1,0 +1,34 @@
+﻿@model List<Aktie_WebsiteMVCV2.Models.GlobalQuote>
+
+@{
+    ViewData["Title"] = "Dine aktiepakker";
+}
+
+<h1>Dine aktier</h1>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Ingen aktier fundet.</p>
+}
+else
+{
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Pris</th>
+                <th>Ændring</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stock in Model)
+            {
+                <tr>
+                    <td>@stock.Symbol</td>
+                    <td>@stock.Price</td>
+                    <td>@stock.ChangePercent</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
