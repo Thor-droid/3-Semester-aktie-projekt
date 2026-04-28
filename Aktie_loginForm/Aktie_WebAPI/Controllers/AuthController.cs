@@ -11,7 +11,7 @@ namespace Aktie_WebAPI.Controllers
         private string connectionString =
             "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;TrustServerCertificate=True";
 
-        // ---------------- REGISTER ----------------
+        // Register metode
         [HttpPost("register")]
         public IActionResult Register(RegisterModel model)
         {
@@ -57,7 +57,7 @@ namespace Aktie_WebAPI.Controllers
             }
         }
 
-        // ---------------- LOGIN ----------------
+        // 
         [HttpPost("login")]
         public IActionResult Login(LoginModel model)
         {

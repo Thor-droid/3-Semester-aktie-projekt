@@ -14,7 +14,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
         private string authApiUrl = "https://localhost:7120/api/auth";
         private string stockApiUrl = "https://localhost:7120/api/stock";
 
-        // ---------------- AKTIEVIEW ----------------
+        // Viser aktier
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> AktieView(string symbol)
@@ -37,7 +37,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
             return View(stock);
         }
 
-        // ---------------- LOGIN ----------------
+        // Login metode
         [HttpGet]
         public IActionResult Login()
         {
@@ -75,7 +75,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
             return View();
         }
 
-        // ---------------- REGISTER ----------------
+        // Register metode
         [HttpGet]
         public IActionResult Register()
         {
