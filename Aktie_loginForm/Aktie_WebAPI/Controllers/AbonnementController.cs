@@ -1,4 +1,4 @@
-﻿using Aktie_WebAPI;
+﻿using Aktie_WebAPI.Service;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

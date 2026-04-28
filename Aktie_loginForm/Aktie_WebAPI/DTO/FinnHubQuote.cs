@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Aktie_WebsiteMVCV2.Models
+namespace Aktie_WebAPI.DTO
 {
-    // 🔥 New Finnhub response model
+    
     public class FinnhubQuote
     {
         [JsonPropertyName("c")]

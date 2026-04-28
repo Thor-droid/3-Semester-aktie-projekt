@@ -1,4 +1,4 @@
-﻿namespace Aktie_WebsiteMVCV2.Models
+﻿namespace Aktie_WebsiteMVCV2.DTO.Abonnement
 {
     public class AbonnementResponse
     {

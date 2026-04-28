@@ -1,4 +1,5 @@
-﻿using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.DTO.Abonnement;
+using Aktie_WebsiteMVCV2.DTO.Stock;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
@@ -43,7 +44,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 _ => new List<string>()
             };
 
-            var stocks = new List<GlobalQuote>();
+            var stocks = new List<GlobalQuoteDto>();
 
             foreach (var symbol in symbols)
             {
@@ -51,7 +52,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
                 if (stockResponse.IsSuccessStatusCode)
                 {
-                    var stock = await stockResponse.Content.ReadFromJsonAsync<GlobalQuote>();
+                    var stock = await stockResponse.Content.ReadFromJsonAsync<GlobalQuoteDto>();
 
                     if (stock != null)
                         stocks.Add(stock);

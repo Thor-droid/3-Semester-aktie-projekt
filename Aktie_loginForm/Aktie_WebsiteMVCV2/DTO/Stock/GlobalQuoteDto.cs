@@ -1,14 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Aktie_WebsiteMVCV2.Models
+namespace Aktie_WebsiteMVCV2.DTO.Stock
 {
-    public class StockQuoteResponse
-    {
-        [JsonPropertyName("Global Quote")]
-        public GlobalQuote GlobalQuote { get; set; }
-    }
-
-    public class GlobalQuote
+    public class GlobalQuoteDto
     {
         [JsonPropertyName("01. symbol")]
         public string Symbol { get; set; }

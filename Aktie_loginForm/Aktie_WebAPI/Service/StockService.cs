@@ -1,7 +1,8 @@
-﻿using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebAPI.DTO;
+using Aktie_WebsiteMVCV2.Models;
 using System.Net.Http.Json;
 
-namespace Aktie_WebAPI
+namespace Aktie_WebAPI.Service
 {
     public class StockService
     {
@@ -24,13 +25,13 @@ namespace Aktie_WebAPI
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            // 🔥 Use FinnhubQuote HERE
+            // FinnhubQuote
             var finnhub = await response.Content.ReadFromJsonAsync<FinnhubQuote>();
 
             if (finnhub == null || finnhub.CurrentPrice == 0)
                 return null;
 
-            // 🔥 Convert to your own model
+            // Convert to your own model
             return new GlobalQuote
             {
                 Symbol = symbol.ToUpper(),

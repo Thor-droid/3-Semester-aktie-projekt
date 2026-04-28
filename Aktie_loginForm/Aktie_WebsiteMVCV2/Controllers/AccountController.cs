@@ -1,4 +1,5 @@
-﻿using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.DTO.Stock;
+using Aktie_WebsiteMVCV2.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +32,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 return View();
             }
 
-            var stock = await response.Content.ReadFromJsonAsync<GlobalQuote>();
+            var stock = await response.Content.ReadFromJsonAsync<GlobalQuoteDto>();
 
             return View(stock);
         }
