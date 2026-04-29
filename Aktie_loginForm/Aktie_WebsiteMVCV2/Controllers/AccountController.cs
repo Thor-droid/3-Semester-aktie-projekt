@@ -1,5 +1,6 @@
 ﻿using Aktie_WebsiteMVCV2.DTO.Stock;
 using Aktie_WebsiteMVCV2.Models;
+using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,17 @@ namespace Aktie_WebsiteMVCV2.Controllers
 {
     public class AccountController : Controller
     {
-        private string authApiUrl = "https://localhost:7120/api/auth";
-        private string stockApiUrl = "https://localhost:7120/api/stock";
+        private readonly AuthApiService _authService;
+        private readonly StockApiService _stockService;
 
-        // Viser aktier
+        public AccountController(
+            AuthApiService authService,
+            StockApiService stockService)
+        {
+            _authService = authService;
+            _stockService = stockService;
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> AktieView(string symbol)
@@ -22,60 +30,55 @@ namespace Aktie_WebsiteMVCV2.Controllers
             if (string.IsNullOrEmpty(symbol))
                 return View();
 
-            using var client = new HttpClient();
+            var stock = await _stockService.GetStock(symbol);
 
-            var response = await client.GetAsync($"{stockApiUrl}/{symbol}");
-
-            if (!response.IsSuccessStatusCode)
+            if (stock == null)
             {
                 ViewBag.Error = "Aktie ikke fundet";
                 return View();
             }
 
-            var stock = await response.Content.ReadFromJsonAsync<GlobalQuoteDto>();
-
             return View(stock);
         }
 
-        // Login metode
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            using var client = new HttpClient();
-
-            var response = await client.PostAsJsonAsync($"{authApiUrl}/login", model);
+            var response = await _authService.Login(model);
 
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, result.Navn),
-            new Claim("KundeId", result.KundeId.ToString())
-        };
+                {
+                    new Claim(ClaimTypes.Name, result.Navn),
+                    new Claim("KundeId", result.KundeId.ToString())
+                };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var identity = new ClaimsIdentity(
+                    claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+
                 var principal = new ClaimsPrincipal(identity);
 
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
-                    principal
-                );
+                    principal);
 
-                return RedirectToAction("AktieView", "Account");
+                return RedirectToAction("AktieView");
             }
 
             ViewBag.ErrorMessage = "Forkert email eller password";
             return View();
         }
 
-        // Register metode
         [HttpGet]
         public IActionResult Register()
         {
@@ -88,14 +91,10 @@ namespace Aktie_WebsiteMVCV2.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            using var client = new HttpClient();
-
-            var response = await client.PostAsJsonAsync($"{authApiUrl}/register", model);
+            var response = await _authService.Register(model);
 
             if (response.IsSuccessStatusCode)
-            {
                 return RedirectToAction("Login");
-            }
 
             model.ErrorMessage = "Bruger kunne ikke oprettes";
             return View(model);

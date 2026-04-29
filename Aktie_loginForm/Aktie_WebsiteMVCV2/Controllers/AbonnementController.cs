@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Aktie_WebsiteMVCV2.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
     [Authorize]
     public class AbonnementController : Controller
     {
-        private string apiUrl = "https://localhost:7120/api/abonnement";
+        private readonly AbonnementApiService _abonnementApiService;
+
+        public AbonnementController(AbonnementApiService abonnementApiService)
+        {
+            _abonnementApiService = abonnementApiService;
+        }
 
         [HttpGet]
         public IActionResult Abonnement()
@@ -18,8 +23,6 @@ namespace Aktie_WebsiteMVCV2.Controllers
         [HttpPost]
         public async Task<IActionResult> Buy(string packageName)
         {
-            using var client = new HttpClient();
-
             var kundeIdClaim = User.FindFirst("KundeId");
 
             if (kundeIdClaim == null)
@@ -43,10 +46,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 _ => 1
             };
 
-            var response = await client.PostAsync(
-                $"{apiUrl}/subscribe?kundeId={kundeId}&kategoriId={kategoriId}&aktiepakkeId={aktiepakkeId}",
-                null
-            );
+            var response = await _abonnementApiService.Subscribe(kundeId, kategoriId, aktiepakkeId);
 
             if (response.IsSuccessStatusCode)
             {
@@ -58,4 +58,4 @@ namespace Aktie_WebsiteMVCV2.Controllers
             return RedirectToAction("Abonnement");
         }
     }
-  }
+}

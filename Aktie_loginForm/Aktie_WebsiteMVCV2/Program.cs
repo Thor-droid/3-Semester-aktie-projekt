@@ -1,3 +1,4 @@
+using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddHttpClient<AuthApiService>();
+builder.Services.AddHttpClient<StockApiService>();
+builder.Services.AddHttpClient<AbonnementApiService>();
+
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

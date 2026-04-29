@@ -1,16 +1,23 @@
-﻿using Aktie_WebsiteMVCV2.DTO.Abonnement;
-using Aktie_WebsiteMVCV2.DTO.Stock;
+﻿using Aktie_WebsiteMVCV2.DTO.Stock;
+using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
     [Authorize]
     public class AktiepakkerController : Controller
     {
-        private string abonnementApiUrl = "https://localhost:7120/api/abonnement";
-        private string stockApiUrl = "https://localhost:7120/api/stock";
+        private readonly AbonnementApiService _abonnementService;
+        private readonly StockApiService _stockService;
+
+        public AktiepakkerController(
+            AbonnementApiService abonnementService,
+            StockApiService stockService)
+        {
+            _abonnementService = abonnementService;
+            _stockService = stockService;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -22,16 +29,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
             int kundeId = int.Parse(kundeIdClaim.Value);
 
-            using var client = new HttpClient();
-
-            var abonnementResponse = await client.GetAsync(
-                $"{abonnementApiUrl}/getByCustomer?kundeId={kundeId}"
-            );
-
-            if (!abonnementResponse.IsSuccessStatusCode)
-                return RedirectToAction("Abonnement", "Abonnement");
-
-            var abonnement = await abonnementResponse.Content.ReadFromJsonAsync<AbonnementResponse>();
+            var abonnement = await _abonnementService.GetByCustomer(kundeId);
 
             if (abonnement == null)
                 return RedirectToAction("Abonnement", "Abonnement");
@@ -48,15 +46,10 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
             foreach (var symbol in symbols)
             {
-                var stockResponse = await client.GetAsync($"{stockApiUrl}/{symbol}");
+                var stock = await _stockService.GetStock(symbol);
 
-                if (stockResponse.IsSuccessStatusCode)
-                {
-                    var stock = await stockResponse.Content.ReadFromJsonAsync<GlobalQuoteDto>();
-
-                    if (stock != null)
-                        stocks.Add(stock);
-                }
+                if (stock != null)
+                    stocks.Add(stock);
 
                 await Task.Delay(500);
             }
