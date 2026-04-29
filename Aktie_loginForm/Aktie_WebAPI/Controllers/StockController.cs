@@ -1,4 +1,5 @@
 ﻿using Aktie_WebAPI.Service;
+using Aktie_WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aktie_WebAPI.Controllers
@@ -7,22 +8,25 @@ namespace Aktie_WebAPI.Controllers
     [Route("api/[controller]")]
     public class StockController : ControllerBase
     {
-        private readonly StockService _stockService;
+        private readonly StockService stockService;
 
         public StockController(StockService stockService)
         {
-            _stockService = stockService;
+            this.stockService = stockService;
         }
 
         [HttpGet("{symbol}")]
-        public async Task<IActionResult> Get(string symbol)
+        public async Task<ActionResult<GlobalQuote>> Get(string symbol)
         {
-            var stock = await _stockService.GetQuoteAsync(symbol);
+            if (string.IsNullOrWhiteSpace(symbol))
+                return BadRequest("Symbol mangler");
+
+            var stock = await stockService.GetQuoteAsync(symbol);
 
             if (stock == null || string.IsNullOrEmpty(stock.Symbol))
-                return NotFound("Aktien blev ikke fundet");
+                return NotFound();
 
-            return Ok(stock);
+            return stock;
         }
     }
 }

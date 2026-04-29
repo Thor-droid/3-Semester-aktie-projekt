@@ -11,6 +11,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddHttpClient<StockService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<AbonnementService>();
+builder.Services.AddScoped<AbonnementRepository>();
 
 var app = builder.Build();
 

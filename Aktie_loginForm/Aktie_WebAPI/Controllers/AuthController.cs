@@ -17,14 +17,14 @@ namespace Aktie_WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterModel model)
+        public ActionResult<ApiResponse> Register(RegisterModel model)
         {
-            bool success = authService.Register(model, out string message);
+            var result = authService.Register(model);
 
-            if (!success)
-                return BadRequest(new { success = false, message });
+            if (!result.Success)
+                return BadRequest(result);
 
-            return Ok(new { success = true, message });
+            return result; 
         }
 
         [HttpPost("login")]

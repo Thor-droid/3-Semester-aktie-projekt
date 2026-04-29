@@ -1,39 +1,41 @@
-﻿using Aktie_WebAPI.Service;
+﻿using Aktie_WebAPI.BusinessLogic;
+using Aktie_WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/abonnement")]
-public class AbonnementController : ControllerBase
+namespace Aktie_WebAPI.Controllers
 {
-    private string connectionString =
-        "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;TrustServerCertificate=True";
-
-    private readonly AbonnementService _service;
-
-    public AbonnementController()
+    [ApiController]
+    [Route("api/abonnement")]
+    public class AbonnementController : ControllerBase
     {
-        _service = new AbonnementService(connectionString);
-    }
+        private readonly AbonnementService service;
 
-    [HttpPost("subscribe")]
-    public IActionResult Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
-    {
-        var success = _service.Subscribe(kundeId, kategoriId, aktiepakkeId);
+        // 
+        public AbonnementController(AbonnementService service)
+        {
+            this.service = service;
+        }
 
-        if (success)
-            return Ok(new { message = "Tilmeldt!" });
+        [HttpPost("subscribe")]
+        public ActionResult<ApiResponse> Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
+        {
+            bool success = service.Subscribe(kundeId, kategoriId, aktiepakkeId);
 
-        return BadRequest(new { message = "Ingen pladser tilbage eller fejl" });
-    }
+            if (!success)
+                return BadRequest(ApiResponse.Fail("Ingen pladser tilbage eller fejl"));
 
-    [HttpGet("getByCustomer")]
-    public IActionResult GetByCustomer(int kundeId)
-    {
-        var kategoriId = _service.GetKategoriByCustomer(kundeId);
+            return ApiResponse.Ok("Tilmeldt!");
+        }
 
-        if (kategoriId == null)
-            return NotFound();
+        [HttpGet("getByCustomer")]
+        public ActionResult<AbonnementResponse> GetByCustomer(int kundeId)
+        {
+            var kategoriId = service.GetKategoriByCustomer(kundeId);
 
-        return Ok(new { kategoriId = kategoriId });
+            if (kategoriId == null)
+                return NotFound();
+
+            return new AbonnementResponse(kategoriId.Value);
+        }
     }
 }
