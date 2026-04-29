@@ -1,3 +1,5 @@
+using Aktie_WebAPI.BusinessLogic;
+using Aktie_WebAPI.DatabaseAccess;
 using Aktie_WebAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddHttpClient<StockService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AuthRepository>();
 
 var app = builder.Build();
 

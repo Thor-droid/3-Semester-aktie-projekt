@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="BusinessLogicLayer\" />
+    <Folder Include="AccessShareData\" />
     <Folder Include="Tests\" />
     <Folder Include="Views\Aktie\" />
   </ItemGroup>

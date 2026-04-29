@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Aktie_WebAPI.Models;
+using Aktie_WebAPI.BusinessLogic;
 
 namespace Aktie_WebAPI.Controllers
 {
@@ -8,94 +8,34 @@ namespace Aktie_WebAPI.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private string connectionString =
-            "Data Source=hildur.ucn.dk;Initial Catalog=DMA-CSD-V251_10665995;User ID=DMA-CSD-V251_10665995;Password=Password1!;TrustServerCertificate=True";
+        private readonly AuthService authService;
 
-        // Register metode
+        // Use constructor injection to obtain AuthService (so DI can provide its required AuthRepository)
+        public AuthController(AuthService authService)
+        {
+            this.authService = authService;
+        }
+
         [HttpPost("register")]
         public IActionResult Register(RegisterModel model)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
+            bool success = authService.Register(model, out string message);
 
-                string checkSql = @"
-                    SELECT 1
-                    FROM Customers
-                    WHERE Email = @Email OR KundeNavn = @Name";
+            if (!success)
+                return BadRequest(new { success = false, message });
 
-                using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
-                {
-                    checkCmd.Parameters.AddWithValue("@Email", model.Email);
-                    checkCmd.Parameters.AddWithValue("@Name", model.KundeNavn);
-
-                    var exists = checkCmd.ExecuteScalar();
-
-                    if (exists != null)
-                    {
-                        return BadRequest(new { message = "Bruger findes allerede" });
-                    }
-                }
-
-                string insertSql = @"
-                    INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID)
-                    VALUES (@Email, @Name, @Password, NULL)";
-
-                using (SqlCommand cmd = new SqlCommand(insertSql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Email", model.Email);
-                    cmd.Parameters.AddWithValue("@Name", model.KundeNavn);
-                    cmd.Parameters.AddWithValue("@Password", model.Password);
-
-                    int rows = cmd.ExecuteNonQuery();
-
-                    if (rows > 0)
-                        return Ok(new { success = true });
-
-                    return BadRequest(new { success = false });
-                }
-            }
+            return Ok(new { success = true, message });
         }
 
-        // 
         [HttpPost("login")]
-        public IActionResult Login(LoginModel model)
+        public ActionResult<LoginResponse> Login(LoginModel model)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
+            var result = authService.Login(model);
 
-                string sql = @"
-                    SELECT KundeID, KundeNavn, AbonnementID
-                    FROM Customers
-                    WHERE Email = @Email AND PasswordHash = @Password";
+            if (result == null)
+                return Unauthorized("Forkert login");
 
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Email", model.Email);
-                    cmd.Parameters.AddWithValue("@Password", model.Password);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            int? abonnementId = reader["AbonnementID"] == DBNull.Value
-                                ? null
-                                : Convert.ToInt32(reader["AbonnementID"]);
-
-                            return Ok(new
-                            {
-                                success = true,
-                                kundeId = Convert.ToInt32(reader["KundeID"]),
-                                navn = reader["KundeNavn"].ToString(),
-                                abonnementId = abonnementId
-                            });
-                        }
-                    }
-                }
-
-                return Unauthorized(new { success = false });
-            }
+            return result;
         }
     }
 }
