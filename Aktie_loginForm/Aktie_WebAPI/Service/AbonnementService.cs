@@ -6,7 +6,7 @@ public class AbonnementService
 {
     private readonly string _connectionString;
 
-    public AbonnementService(string connectionString)
+    public AbonnementService(string connectionString)    //Iconfig?
     {
         _connectionString = connectionString;
     }
