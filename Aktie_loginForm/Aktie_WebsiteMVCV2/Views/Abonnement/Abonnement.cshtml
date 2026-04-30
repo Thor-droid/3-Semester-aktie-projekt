@@ -1,50 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Abonnement";
+    ViewData["Title"] = "Abonnementer";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p>Vælg et abonnement for at få adgang til aktiepakker.</p>
+<p>Vælg et abonnement for at gå til aktiepakker.</p>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <p style="color:green">@TempData["SuccessMessage"]</p>
-}
 
-@if (TempData["Error"] != null)
-{
-    <p style="color:red">@TempData["Error"]</p>
-}
+<h2>Vælg pakke</h2>
 
-<hr />
+<a asp-controller="Aktiepakker"
+       asp-action="Index"
+       asp-route-kategoriId="1"
+       class="btn btn-primary">
+    Se Basis pakker
+</a>
 
-<h2>Basis</h2>
-<p>Adgang til 5 aktier</p>
-<p><strong>49 kr / måned</strong></p>
+<br />
+<br />
 
-<form method="post" asp-action="Buy" asp-controller="Abonnement">
-    <input type="hidden" name="packageName" value="Basis" />
-    <button type="submit">Køb Basis</button>
-</form>
+<a asp-controller="Aktiepakker"
+       asp-action="Index"
+       asp-route-kategoriId="2"
+       class="btn btn-primary">
+    Se Pro pakker
+</a>
 
-<hr />
+<br />
+<br />
 
-<h2>Pro</h2>
-<p>Adgang til 10 aktier</p>
-<p><strong>89 kr / måned</strong></p>
-
-<form method="post" asp-action="Buy" asp-controller="Abonnement">
-    <input type="hidden" name="packageName" value="Pro" />
-    <button type="submit">Køb Pro</button>
-</form>
-
-<hr />
-
-<h2>Premium</h2>
-<p>Adgang til 25 aktier</p>
-<p><strong>149 kr / måned</strong></p>
-
-<form method="post" asp-action="Buy" asp-controller="Abonnement">
-    <input type="hidden" name="packageName" value="Premium" />
-    <button type="submit">Køb Premium</button>
-</form>
+<a asp-controller="Aktiepakker"
+       asp-action="Index"
+       asp-route-kategoriId="3"
+       class="btn btn-primary">
+    Se Premium pakker
+</a>

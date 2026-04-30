@@ -20,26 +20,34 @@ namespace Aktie_WebsiteMVCV2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int kategoriId)
         {
             var kundeIdClaim = User.FindFirst("KundeId");
 
             if (kundeIdClaim == null)
                 return RedirectToAction("Login", "Account");
 
-            int kundeId = int.Parse(kundeIdClaim.Value);
-
-            var abonnement = await _abonnementService.GetByCustomer(kundeId);
-
-            if (abonnement == null)
+            if (kategoriId < 1 || kategoriId > 3)
                 return RedirectToAction("Abonnement", "Abonnement");
 
-            List<string> symbols = abonnement.KategoriId switch
+            List<string> symbols = kategoriId switch
             {
                 1 => new List<string> { "AAPL", "MSFT", "TSLA", "GOOGL", "AMZN" },
                 2 => new List<string> { "AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "NVDA", "META", "NFLX", "AMD", "INTC" },
                 3 => new List<string> { "AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "NVDA", "META", "NFLX", "AMD", "INTC", "IBM", "ORCL", "DIS", "V", "BABA" },
                 _ => new List<string>()
+            };
+
+            // hent antal brugere
+            int currentUsers = await _abonnementService.GetCurrentUsersByKategoriId(kategoriId);
+
+            // max users, hard coded ind.
+            int maxUsers = kategoriId switch
+            {
+                1 => 5,
+                2 => 10,
+                3 => 25,
+                _ => 0
             };
 
             var stocks = new List<GlobalQuoteDto>();
@@ -53,6 +61,12 @@ namespace Aktie_WebsiteMVCV2.Controllers
 
                 await Task.Delay(500);
             }
+
+            // send til view
+            ViewBag.KategoriId = kategoriId;
+            ViewBag.CurrentUsers = currentUsers;
+            ViewBag.MaxUsers = maxUsers;
+            ViewBag.LedigePladser = maxUsers - currentUsers;
 
             return View(stocks);
         }

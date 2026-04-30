@@ -1,34 +1,107 @@
 ﻿@model List<Aktie_WebsiteMVCV2.DTO.Stock.GlobalQuoteDto>
 
 @{
-    ViewData["Title"] = "Dine aktiepakker";
+    ViewData["Title"] = "Aktiepakker";
+
+    int kategoriId = ViewBag.KategoriId;
+
+    string pakkeNavn = "";
+    string beskrivelse = "";
+    string pris = "";
+
+    if (kategoriId == 1)
+    {
+        pakkeNavn = "Basis";
+        beskrivelse = "Adgang til 5 aktier";
+        pris = "49 kr / måned";
+    }
+    else if (kategoriId == 2)
+    {
+        pakkeNavn = "Pro";
+        beskrivelse = "Adgang til 10 aktier";
+        pris = "89 kr / måned";
+    }
+    else if (kategoriId == 3)
+    {
+        pakkeNavn = "Premium";
+        beskrivelse = "Adgang til 25 aktier";
+        pris = "149 kr / måned";
+    }
 }
 
-<h1>Dine aktier</h1>
-
-@if (Model == null || !Model.Any())
+@if (TempData["SuccessMessage"] != null)
 {
-    <p>Ingen aktier fundet.</p>
+    <div style="background-color:#d4edda; padding:10px; border-radius:5px; margin-bottom:15px;">
+        @TempData["SuccessMessage"]
+    </div>
 }
-else
+
+@if (TempData["Error"] != null)
 {
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>Symbol</th>
-                <th>Pris</th>
-                <th>Ændring</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var stock in Model)
-            {
+    <div style="background-color:#f8d7da; color:#721c24; padding:10px; border-radius:5px; margin-bottom:15px;">
+        @TempData["Error"]
+    </div>
+}
+
+<h1>@pakkeNavn aktiepakker</h1>
+
+<p>Her kan du vælge en aktiepakke, der passer til dit abonnement.</p>
+
+<div style="border:1px solid #ccc; border-radius:8px; padding:20px; margin-top:20px; max-width:650px;">
+
+    <h2>@pakkeNavn aktiepakke</h2>
+
+    <p>@beskrivelse</p>
+    <p><strong>@pris</strong></p>
+    <p>
+        Pladser:
+        <strong>@ViewBag.CurrentUsers</strong> / <strong>@ViewBag.MaxUsers</strong>
+    </p>
+
+    <p>
+        Ledige pladser:
+        <strong>@ViewBag.LedigePladser</strong>
+    </p>
+
+    <h3>Aktier i pakken</h3>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>Ingen aktier fundet.</p>
+    }
+    else
+    {
+        <table border="1" cellpadding="10" style="width:100%; margin-bottom:20px;">
+            <thead>
                 <tr>
-                    <td>@stock.Symbol</td>
-                    <td>@stock.Price</td>
-                    <td>@stock.ChangePercent</td>
+                    <th>Symbol</th>
+                    <th>Pris</th>
+                    <th>Ændring</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var stock in Model)
+                {
+                    <tr>
+                        <td>@stock.Symbol</td>
+                        <td>@stock.Price</td>
+                        <td>@stock.ChangePercent</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <form method="post" asp-controller="Abonnement" asp-action="Buy">
+        <input type="hidden" name="packageName" value="@pakkeNavn" />
+        <button type="submit" class="btn btn-success">
+            Køb aktiepakke
+        </button>
+    </form>
+</div>
+
+<br />
+
+<a asp-controller="Abonnement" asp-action="Abonnement">
+    ← Tilbage til abonnement
+</a>

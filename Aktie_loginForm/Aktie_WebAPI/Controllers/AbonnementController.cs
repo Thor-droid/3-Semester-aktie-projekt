@@ -10,7 +10,6 @@ namespace Aktie_WebAPI.Controllers
     {
         private readonly AbonnementService service;
 
-        // 
         public AbonnementController(AbonnementService service)
         {
             this.service = service;
@@ -22,9 +21,11 @@ namespace Aktie_WebAPI.Controllers
             bool success = service.Subscribe(kundeId, kategoriId, aktiepakkeId);
 
             if (!success)
-                return BadRequest(ApiResponse.Fail("Ingen pladser tilbage eller fejl"));
+            {
+                return BadRequest(ApiResponse.Fail("Du abonnerer allerede på denne aktiepakke, eller der er ingen pladser tilbage."));
+            }
 
-            return ApiResponse.Ok("Tilmeldt!");
+            return ApiResponse.Ok("Du er nu tilmeldt aktiepakken!");
         }
 
         [HttpGet("getByCustomer")]
@@ -36,6 +37,13 @@ namespace Aktie_WebAPI.Controllers
                 return NotFound();
 
             return new AbonnementResponse(kategoriId.Value);
+        }
+
+        [HttpGet("countByKategori")]
+        public IActionResult CountByKategori(int kategoriId)
+        {
+            int count = service.CountByKategori(kategoriId);
+            return Ok(count);
         }
     }
 }

@@ -21,6 +21,26 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             try
             {
+                string alreadySubscribedSql = @"
+                    SELECT COUNT(*)
+                    FROM Abonnement
+                    WHERE KundeID = @KundeID
+                    AND KategoriID = @KategoriID";
+
+                using (SqlCommand cmd = new SqlCommand(alreadySubscribedSql, conn, transaction))
+                {
+                    cmd.Parameters.AddWithValue("@KundeID", kundeId);
+                    cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
+
+                    int alreadySubscribed = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (alreadySubscribed > 0)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+
                 string checkSql = @"
                     SELECT 
                         k.MaxBrugere,
@@ -112,6 +132,22 @@ namespace Aktie_WebAPI.DatabaseAccess
                 return null;
 
             return Convert.ToInt32(result);
+        }
+
+        public int CountByKategori(int kategoriId)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Abonnement
+                WHERE KategoriID = @KategoriID";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
 }

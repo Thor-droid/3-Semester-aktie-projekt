@@ -1,5 +1,4 @@
 ﻿using Aktie_WebsiteMVCV2.DTO.Abonnement;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Aktie_WebsiteMVCV2.Services
@@ -40,6 +39,20 @@ namespace Aktie_WebsiteMVCV2.Services
                 return null;
 
             return await response.Content.ReadFromJsonAsync<AbonnementResponse>();
+        }
+
+        public async Task<int> GetCurrentUsersByKategoriId(int kategoriId)
+        {
+            string url = _config["ApiSettings:AbonnementApiUrl"];
+
+            var response = await _httpClient.GetAsync(
+                $"{url}/countByKategori?kategoriId={kategoriId}"
+            );
+
+            if (!response.IsSuccessStatusCode)
+                return 0;
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
     }
 }

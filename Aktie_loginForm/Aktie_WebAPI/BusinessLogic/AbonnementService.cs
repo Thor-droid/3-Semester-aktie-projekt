@@ -26,5 +26,13 @@ namespace Aktie_WebAPI.BusinessLogic
 
             return abonnementRepository.GetKategoriByCustomer(kundeId);
         }
+
+        public int CountByKategori(int kategoriId)
+        {
+            if (kategoriId <= 0)
+                return 0;
+
+            return abonnementRepository.CountByKategori(kategoriId);
+        }
     }
 }

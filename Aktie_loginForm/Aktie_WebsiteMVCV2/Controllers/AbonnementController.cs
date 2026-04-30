@@ -38,24 +38,18 @@ namespace Aktie_WebsiteMVCV2.Controllers
                 _ => 1
             };
 
-            int aktiepakkeId = packageName switch
-            {
-                "Basis" => 1,
-                "Pro" => 2,
-                "Premium" => 3,
-                _ => 1
-            };
+            int aktiepakkeId = kategoriId;
 
             var response = await _abonnementApiService.Subscribe(kundeId, kategoriId, aktiepakkeId);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["SuccessMessage"] = $"Du har valgt {packageName}!";
-                return RedirectToAction("Index", "Aktiepakker");
+                TempData["SuccessMessage"] = $"Du har nu abonneret på {packageName} aktiepakken!";
+                return RedirectToAction("Index", "Aktiepakker", new { kategoriId = kategoriId });
             }
 
             TempData["Error"] = "Kunne ikke oprette abonnement";
-            return RedirectToAction("Abonnement");
+            return RedirectToAction("Index", "Aktiepakker", new { kategoriId = kategoriId });
         }
     }
 }
