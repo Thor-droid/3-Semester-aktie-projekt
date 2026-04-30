@@ -1,0 +1,75 @@
+﻿@model Tuple<Aktie_WebsiteMVCV2.DTO.Abonnement.AbonnementResponse,
+List < Aktie_WebsiteMVCV2.DTO.Stock.GlobalQuoteDto >>
+
+@{
+    ViewData["Title"] = "Mine aktiepakker";
+
+    var abonnement = Model?.Item1;
+    var stocks = Model?.Item2;
+
+    string pakkeNavn = "";
+
+    if (abonnement != null)
+    {
+        if (abonnement.KategoriId == 1)
+        {
+            pakkeNavn = "Basis";
+        }
+        else if (abonnement.KategoriId == 2)
+        {
+            pakkeNavn = "Pro";
+        }
+        else if (abonnement.KategoriId == 3)
+        {
+            pakkeNavn = "Premium";
+        }
+    }
+}
+
+<h1>Mine aktiepakker</h1>
+
+@if (abonnement == null)
+{
+    <p>Du abonnerer ikke på nogen aktiepakker endnu.</p>
+
+    <a asp-controller="Abonnement" asp-action="Abonnement" class="btn btn-primary">
+        Se abonnementer
+    </a>
+}
+else
+{
+    <div style="border:1px solid #ccc; border-radius:8px; padding:20px; max-width:700px;">
+
+        <h2>@pakkeNavn aktiepakke</h2>
+        <p>Du abonnerer på denne aktiepakke.</p>
+
+        <h3>Aktier i pakken</h3>
+
+        @if (stocks == null || !stocks.Any())
+        {
+            <p>Ingen aktier fundet.</p>
+        }
+        else
+        {
+            <table border="1" cellpadding="10" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Pris</th>
+                        <th>Ændring</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stock in stocks)
+                    {
+                        <tr>
+                            <td>@stock.Symbol</td>
+                            <td>@stock.Price</td>
+                            <td>@stock.ChangePercent</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}
