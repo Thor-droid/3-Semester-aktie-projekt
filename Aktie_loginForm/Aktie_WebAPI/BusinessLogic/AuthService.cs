@@ -39,7 +39,8 @@ namespace Aktie_WebAPI.BusinessLogic
             }
         }
 
-        public LoginResponse? Login(LoginModel model)
+        //virtual for at kunne mocke i tests
+        public virtual LoginResponse? Login(LoginModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {

@@ -1,38 +1,40 @@
-﻿using Xunit;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Aktie_WebAPI;
+using Xunit;
+using Aktie_WebAPI.Service;
+using Aktie_WebsiteMVCV2.Models;
 
 namespace UnitTests
 {
     public class AktieIntegrationsTest
     {
         [Fact]
-        public async Task GetQuoteAsync_ReturnsData_FromRealApi()
+        public async Task GetQuoteAsync_ReturnsData_FromFinnhub()
         {
             // Arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
-            Environment.SetEnvironmentVariable("AlphaVantage__ApiKey", "1U6ZNQU1PDOMSIXB");
+            Environment.SetEnvironmentVariable(
+                "Finnhub__ApiKey",
+                "d7nkb4hr01qppri56j50d7nkb4hr01qppri56j5g"
+            );
 
             var config = new ConfigurationBuilder()
-            .AddEnvironmentVariables()
-            .Build();
+                .AddEnvironmentVariables()
+                .Build();
 
             var service = new StockService(httpClient, config);
 
-            
+            // Act
             var result = await service.GetQuoteAsync("AAPL");
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.GlobalQuote);
-
-            Assert.Equal("AAPL", result.GlobalQuote.Symbol);
-
-            // prisen ændrer sig hele tiden, så vi tjekker bare at den ikke er null eller tom
-            Assert.False(string.IsNullOrEmpty(result.GlobalQuote.Price));
+            Assert.Equal("AAPL", result.Symbol);
+            Assert.False(string.IsNullOrEmpty(result.Price));
+            Assert.False(string.IsNullOrEmpty(result.ChangePercent));
         }
     }
 }

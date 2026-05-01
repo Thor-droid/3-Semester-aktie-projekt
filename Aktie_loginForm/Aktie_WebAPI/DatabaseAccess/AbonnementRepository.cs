@@ -12,7 +12,8 @@ namespace Aktie_WebAPI.DatabaseAccess
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
-        public bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
+        //virtual er til unit test
+        public virtual bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();

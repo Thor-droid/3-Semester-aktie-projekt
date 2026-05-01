@@ -1,4 +1,6 @@
-﻿using Aktie_WebAPI.Controllers;
+﻿using Aktie_WebAPI.BusinessLogic;
+using Aktie_WebAPI.Controllers;
+using Aktie_WebAPI.DatabaseAccess;
 using Aktie_WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,10 +9,19 @@ using Xunit;
 public class AuthControllerTests
 {
     [Fact]
-    public void Login_ShouldReturnOk_WhenCredentialsAreCorrect()
+    public void Login_ShouldReturnValue_WhenCredentialsAreCorrect()
     {
         // Arrange
-        var controller = new AuthController();
+        var authServiceMock = new Mock<AuthService>((AuthRepository)null!);
+
+        authServiceMock
+            .Setup(s => s.Login(It.Is<LoginModel>(m =>
+                m.Email == "fisk@fisk.fisk" &&
+                m.Password == "fisk"
+            )))
+            .Returns(new LoginResponse());
+
+        var controller = new AuthController(authServiceMock.Object);
 
         var model = new LoginModel
         {
@@ -22,13 +33,21 @@ public class AuthControllerTests
         var result = controller.Login(model);
 
         // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.NotNull(okResult.Value);
+        Assert.NotNull(result.Value);
+        Assert.Null(result.Result);
     }
+
     [Fact]
     public void Login_ShouldReturnUnauthorized_WhenCredentialsAreWrong()
     {
-        var controller = new AuthController();
+        // Arrange
+        var authServiceMock = new Mock<AuthService>((AuthRepository)null!);
+
+        authServiceMock
+            .Setup(s => s.Login(It.IsAny<LoginModel>()))
+            .Returns((LoginResponse?)null);
+
+        var controller = new AuthController(authServiceMock.Object);
 
         var model = new LoginModel
         {
@@ -36,8 +55,10 @@ public class AuthControllerTests
             Password = "wrong"
         };
 
+        // Act
         var result = controller.Login(model);
 
-        Assert.IsType<UnauthorizedObjectResult>(result);
+        // Assert
+        Assert.IsType<UnauthorizedObjectResult>(result.Result);
     }
 }
