@@ -11,7 +11,7 @@ namespace Aktie_WebAPI.BusinessLogic
             this.abonnementRepository = abonnementRepository;
         }
 
-        public virtual bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
+        public bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             if (kundeId <= 0 || kategoriId <= 0 || aktiepakkeId <= 0)
                 return false;

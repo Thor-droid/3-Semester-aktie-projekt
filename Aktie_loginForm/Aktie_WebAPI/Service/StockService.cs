@@ -36,8 +36,8 @@ namespace Aktie_WebAPI.Service
             return new GlobalQuote
             {
                 Symbol = symbol.ToUpper(),
-                Price = finnhub.CurrentPrice.ToString("F2", CultureInfo.InvariantCulture),
-                ChangePercent = finnhub.ChangePercent.ToString("F2", CultureInfo.InvariantCulture) + "%"
+                Price = finnhub.CurrentPrice.ToString("F2"),
+                ChangePercent = finnhub.ChangePercent.ToString("F2") + "%"
             };
         }
     }
