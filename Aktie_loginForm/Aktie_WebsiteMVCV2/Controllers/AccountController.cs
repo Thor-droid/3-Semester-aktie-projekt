@@ -1,12 +1,9 @@
 ﻿using Aktie_WebsiteMVCV2.DTO.Stock;
 using Aktie_WebsiteMVCV2.Models;
 using Aktie_WebsiteMVCV2.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
-using System.Security.Claims;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
@@ -14,13 +11,16 @@ namespace Aktie_WebsiteMVCV2.Controllers
     {
         private readonly AuthApiService _authService;
         private readonly StockApiService _stockService;
+        private readonly ILoginService _loginService;
 
         public AccountController(
             AuthApiService authService,
-            StockApiService stockService)
+            StockApiService stockService,
+            ILoginService loginService)
         {
             _authService = authService;
             _stockService = stockService;
+            _loginService = loginService;
         }
 
         [HttpGet]
@@ -56,27 +56,13 @@ namespace Aktie_WebsiteMVCV2.Controllers
             {
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, result.Navn),
-                    new Claim("KundeId", result.KundeId.ToString())
-                };
-
-                var identity = new ClaimsIdentity(
-                    claims,
-                    CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    principal);
+                await _loginService.SignInUser(HttpContext, result);
 
                 return RedirectToAction("AktieView");
             }
 
             ViewBag.ErrorMessage = "Forkert email eller password";
-            return View();
+            return View(model);
         }
 
         [HttpGet]
@@ -103,8 +89,7 @@ namespace Aktie_WebsiteMVCV2.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            await _loginService.SignOutUser(HttpContext);
 
             return RedirectToAction("Login");
         }

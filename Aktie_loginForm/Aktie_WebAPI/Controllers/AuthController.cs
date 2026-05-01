@@ -10,7 +10,7 @@ namespace Aktie_WebAPI.Controllers
     {
         private readonly AuthService authService;
 
-        // Use constructor injection to obtain AuthService (so DI can provide its required AuthRepository)
+        // Vi bruger Dependecy injection (kan ses i AuthRespository)
         public AuthController(AuthService authService)
         {
             this.authService = authService;

@@ -54,7 +54,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             conn.Open();
 
             string sql = @"
-        SELECT KundeID, KundeNavn, AbonnementID
+        SELECT KundeID, KundeNavn, AbonnementID, IsAdmin
         FROM Customers
         WHERE Email = @Email AND PasswordHash = @Password";
 
@@ -67,23 +67,23 @@ namespace Aktie_WebAPI.DatabaseAccess
             if (!reader.Read())
                 return null;
 
-            
             int kundeId = Convert.ToInt32(reader["KundeID"]);
             string navn = reader["KundeNavn"].ToString();
 
-            int? abonnementId;
+            int? abonnementId = reader["AbonnementID"] == DBNull.Value
+                ? null
+                : Convert.ToInt32(reader["AbonnementID"]);
 
-            if (reader["AbonnementID"] == DBNull.Value)
-            {
-                abonnementId = null;
-            }
-            else
-            {
-                abonnementId = Convert.ToInt32(reader["AbonnementID"]);
-            }
+            bool isAdmin = Convert.ToBoolean(reader["IsAdmin"]);
 
-            
-            return new LoginResponse(true, kundeId, navn, abonnementId);
+            return new LoginResponse
+            {
+                Success = true,
+                KundeId = kundeId,
+                Navn = navn,
+                AbonnementId = abonnementId,
+                IsAdmin = isAdmin
+            };
         }
     }
   }
