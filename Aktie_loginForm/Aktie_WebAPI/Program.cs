@@ -9,10 +9,10 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddHttpClient<StockService>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<AuthRepository>();
-builder.Services.AddScoped<AbonnementService>();
-builder.Services.AddScoped<AbonnementRepository>();
+builder.Services.AddScoped<AuthLogic>();
+builder.Services.AddScoped<AuthAccess>();
+builder.Services.AddScoped<AbonnementLogic>();
+builder.Services.AddScoped<AbonnementAccess>();
 
 var app = builder.Build();
 

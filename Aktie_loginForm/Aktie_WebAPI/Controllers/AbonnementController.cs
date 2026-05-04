@@ -8,9 +8,9 @@ namespace Aktie_WebAPI.Controllers
     [Route("api/abonnement")]
     public class AbonnementController : ControllerBase
     {
-        private readonly AbonnementService service;
+        private readonly AbonnementLogic service;
 
-        public AbonnementController(AbonnementService service)
+        public AbonnementController(AbonnementLogic service)
         {
             this.service = service;
         }

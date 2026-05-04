@@ -2,13 +2,13 @@
 
 namespace Aktie_WebAPI.BusinessLogic
 {
-    public class AbonnementService
+    public class AbonnementLogic
     {
-        private readonly AbonnementRepository abonnementRepository;
+        private readonly AbonnementAccess _abonnementAccess;
 
-        public AbonnementService(AbonnementRepository abonnementRepository)
+        public AbonnementLogic(AbonnementAccess _abonnementAccess)
         {
-            this.abonnementRepository = abonnementRepository;
+            this._abonnementAccess = _abonnementAccess;
         }
 
         public bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
@@ -16,7 +16,7 @@ namespace Aktie_WebAPI.BusinessLogic
             if (kundeId <= 0 || kategoriId <= 0 || aktiepakkeId <= 0)
                 return false;
 
-            return abonnementRepository.Subscribe(kundeId, kategoriId, aktiepakkeId);
+            return _abonnementAccess.Subscribe(kundeId, kategoriId, aktiepakkeId);
         }
 
         public int? GetKategoriByCustomer(int kundeId)
@@ -24,7 +24,7 @@ namespace Aktie_WebAPI.BusinessLogic
             if (kundeId <= 0)
                 return null;
 
-            return abonnementRepository.GetKategoriByCustomer(kundeId);
+            return _abonnementAccess.GetKategoriByCustomer(kundeId);
         }
 
         public int CountByKategori(int kategoriId)
@@ -32,7 +32,7 @@ namespace Aktie_WebAPI.BusinessLogic
             if (kategoriId <= 0)
                 return 0;
 
-            return abonnementRepository.CountByKategori(kategoriId);
+            return _abonnementAccess.CountByKategori(kategoriId);
         }
     }
 }

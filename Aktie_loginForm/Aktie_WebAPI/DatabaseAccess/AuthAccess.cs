@@ -4,12 +4,12 @@ using Aktie_WebAPI.Models;
 
 namespace Aktie_WebAPI.DatabaseAccess
 {
-    public class AuthRepository
+    public class AuthAccess
     {
         private readonly string connectionString;
 
         // 🔹 Hent fra appsettings.json
-        public AuthRepository(IConfiguration config)
+        public AuthAccess(IConfiguration config)
         {
             connectionString = config.GetConnectionString("DefaultConnection");
         }

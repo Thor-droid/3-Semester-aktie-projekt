@@ -3,14 +3,14 @@ using Aktie_WebAPI.Models;
 
 namespace Aktie_WebAPI.BusinessLogic
 {
-    public class AuthService
+    public class AuthLogic
     {
-        private readonly AuthRepository authRepository;
+        private readonly AuthAccess _authAccess;
 
         //
-        public AuthService(AuthRepository authRepository)
+        public AuthLogic(AuthAccess authRepository)
         {
-            this.authRepository = authRepository;
+            this._authAccess = authRepository;
         }
 
         public ApiResponse Register(RegisterModel model)
@@ -24,10 +24,10 @@ namespace Aktie_WebAPI.BusinessLogic
             if (string.IsNullOrWhiteSpace(model.Password))
                 return ApiResponse.Fail("Password mangler");
 
-            if (authRepository.UserExists(model.Email, model.KundeNavn))
+            if (_authAccess.UserExists(model.Email, model.KundeNavn))
                 return ApiResponse.Fail("Bruger findes allerede");
 
-            bool created = authRepository.CreateUser(model);
+            bool created = _authAccess.CreateUser(model);
 
             if (created)
             {
@@ -47,7 +47,7 @@ namespace Aktie_WebAPI.BusinessLogic
                 return null;
             }
 
-            return authRepository.Login(model);
+            return _authAccess.Login(model);
         }
     }
 }

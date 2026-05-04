@@ -8,10 +8,10 @@ namespace Aktie_WebAPI.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService authService;
+        private readonly AuthLogic authService;
 
         // Vi bruger Dependecy injection (kan ses i AuthRespository)
-        public AuthController(AuthService authService)
+        public AuthController(AuthLogic authService)
         {
             this.authService = authService;
         }

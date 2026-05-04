@@ -15,7 +15,7 @@ namespace UnitTests
     //WHERE KundeID = 19;
     public class AbonnementIntegrationTests
     {
-        private readonly AbonnementRepository repo;
+        private readonly AbonnementAccess repo;
 
         public AbonnementIntegrationTests()
         {
@@ -23,7 +23,7 @@ namespace UnitTests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            repo = new AbonnementRepository(config);
+            repo = new AbonnementAccess(config);
         }
 
         [Fact]

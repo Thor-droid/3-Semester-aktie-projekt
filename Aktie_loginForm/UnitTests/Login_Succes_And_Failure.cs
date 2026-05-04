@@ -12,7 +12,7 @@ public class AuthControllerTests
     public void Login_ShouldReturnValue_WhenCredentialsAreCorrect()
     {
         // Arrange
-        var authServiceMock = new Mock<AuthService>((AuthRepository)null!);
+        var authServiceMock = new Mock<AuthLogic>((AuthAccess)null!);
 
         authServiceMock
             .Setup(s => s.Login(It.Is<LoginModel>(m =>
@@ -41,7 +41,7 @@ public class AuthControllerTests
     public void Login_ShouldReturnUnauthorized_WhenCredentialsAreWrong()
     {
         // Arrange
-        var authServiceMock = new Mock<AuthService>((AuthRepository)null!);
+        var authServiceMock = new Mock<AuthLogic>((AuthAccess)null!);
 
         authServiceMock
             .Setup(s => s.Login(It.IsAny<LoginModel>()))
