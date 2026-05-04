@@ -28,12 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "AdminForm";
+            buttonOpretBruger = new Button();
+            SuspendLayout();
+            // 
+            // buttonOpretBruger
+            // 
+            buttonOpretBruger.Location = new Point(264, 175);
+            buttonOpretBruger.Name = "buttonOpretBruger";
+            buttonOpretBruger.Size = new Size(295, 46);
+            buttonOpretBruger.TabIndex = 0;
+            buttonOpretBruger.Text = "Opret Bruger";
+            buttonOpretBruger.UseVisualStyleBackColor = true;
+            buttonOpretBruger.Click += buttonOpretBruger_Click;
+            // 
+            // AdminForm
+            // 
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(buttonOpretBruger);
+            Name = "AdminForm";
+            Text = "AdminForm";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button buttonOpretBruger;
     }
 }

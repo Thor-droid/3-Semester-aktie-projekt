@@ -14,5 +14,11 @@ namespace Aktie_loginForm
         {
             InitializeComponent();
         }
+
+        private void buttonOpretBruger_Click(object sender, EventArgs e)
+        {
+            using RegisterForm registerForm = new RegisterForm();
+            registerForm.ShowDialog();
+        }
     }
 }
