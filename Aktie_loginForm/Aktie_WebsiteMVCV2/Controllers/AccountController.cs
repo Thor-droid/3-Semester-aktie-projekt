@@ -1,5 +1,5 @@
 ﻿using Aktie_WebsiteMVCV2.BusinessLogicLayer;
-using Aktie_WebsiteMVCV2.Models;
+using Aktie_WebsiteMVCV2.Models.AccountModels;
 using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.Models.AccountModels;
 using System.Net.Http.Json;
 
 namespace Aktie_WebsiteMVCV2.Services

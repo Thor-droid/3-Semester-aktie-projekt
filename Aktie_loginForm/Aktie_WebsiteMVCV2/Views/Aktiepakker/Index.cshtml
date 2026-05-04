@@ -1,32 +1,27 @@
-﻿@model List<Aktie_WebsiteMVCV2.DTO.Stock.GlobalQuoteDto>
+﻿@model Aktie_WebsiteMVCV2.DTO.Stock.AktiepakkeView
 
 @{
     ViewData["Title"] = "Aktiepakker";
 
-    int kategoriId = ViewBag.KategoriId;
+    int kategoriId = Model.KategoriId;
 
-    string pakkeNavn = "";
-    string beskrivelse = "";
-    string pris = "";
+    string pakkeNavn = kategoriId switch
+    {
+        1 => "Basis",
+        2 => "Pro",
+        3 => "Premium",
+        _ => ""
+    };
 
-    if (kategoriId == 1)
+    string beskrivelse = $"Adgang til {Model.MaxUsers} aktier";
+
+    string pris = kategoriId switch
     {
-        pakkeNavn = "Basis";
-        beskrivelse = "Adgang til 5 aktier";
-        pris = "49 kr / måned";
-    }
-    else if (kategoriId == 2)
-    {
-        pakkeNavn = "Pro";
-        beskrivelse = "Adgang til 10 aktier";
-        pris = "89 kr / måned";
-    }
-    else if (kategoriId == 3)
-    {
-        pakkeNavn = "Premium";
-        beskrivelse = "Adgang til 25 aktier";
-        pris = "149 kr / måned";
-    }
+        1 => "49 kr / måned",
+        2 => "89 kr / måned",
+        3 => "149 kr / måned",
+        _ => ""
+    };
 }
 
 @if (TempData["SuccessMessage"] != null)
@@ -53,19 +48,21 @@
 
     <p>@beskrivelse</p>
     <p><strong>@pris</strong></p>
+
     <p>
         Pladser:
-        <strong>@ViewBag.CurrentUsers</strong> / <strong>@ViewBag.MaxUsers</strong>
+        <strong>@Model.CurrentUsers</strong> /
+        <strong>@Model.MaxUsers</strong>
     </p>
 
     <p>
         Ledige pladser:
-        <strong>@ViewBag.LedigePladser</strong>
+        <strong>@Model.LedigePladser</strong>
     </p>
 
     <h3>Aktier i pakken</h3>
 
-    @if (Model == null || !Model.Any())
+    @if (Model.Stocks == null || !Model.Stocks.Any())
     {
         <p>Ingen aktier fundet.</p>
     }
@@ -80,7 +77,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var stock in Model)
+                @foreach (var stock in Model.Stocks)
                 {
                     <tr>
                         <td>@stock.Symbol</td>
@@ -93,7 +90,8 @@
     }
 
     <form method="post" asp-controller="Abonnement" asp-action="Buy">
-        <input type="hidden" name="packageName" value="@pakkeNavn" />
+        <input type="hidden" name="pakkeId" value="@pakkeNavn" />
+
         <button type="submit" class="btn btn-success">
             Køb aktiepakke
         </button>
