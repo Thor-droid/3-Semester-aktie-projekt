@@ -18,9 +18,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpClient<AuthApiService>();
 builder.Services.AddHttpClient<StockApiService>();
 builder.Services.AddHttpClient<AbonnementApiService>();
-
+builder.Services.AddScoped<AccountLogic>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<AbonnementLogic>();
+builder.Services.AddScoped<AktiepakkeLogic>();
+builder.Services.AddScoped<MineAktiepakkerLogic>();
 
 builder.Services.AddHttpClient();
 

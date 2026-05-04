@@ -1,4 +1,5 @@
-﻿using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.BusinessLogicLayer;
+using Aktie_WebsiteMVCV2.Models.AccountModels;
 using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +8,16 @@ namespace Aktie_WebsiteMVCV2.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AuthApiService _authService;
+        private readonly AccountLogic _accountLogic;
         private readonly StockApiService _stockService;
         private readonly ILoginService _loginService;
 
         public AccountController(
-            AuthApiService authService,
+            AccountLogic accountLogic,
             StockApiService stockService,
             ILoginService loginService)
         {
-            _authService = authService;
+            _accountLogic = accountLogic;
             _stockService = stockService;
             _loginService = loginService;
         }
@@ -48,14 +49,11 @@ namespace Aktie_WebsiteMVCV2.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var response = await _authService.Login(model);
+            var result = await _accountLogic.Login(model);
 
-            if (response.IsSuccessStatusCode)
+            if (result != null)
             {
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
                 await _loginService.SignInUser(HttpContext, result);
-
                 return RedirectToAction("AktieView");
             }
 
@@ -75,9 +73,9 @@ namespace Aktie_WebsiteMVCV2.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var response = await _authService.Register(model);
+            var success = await _accountLogic.Register(model);
 
-            if (response.IsSuccessStatusCode)
+            if (success)
                 return RedirectToAction("Login");
 
             model.ErrorMessage = "Bruger kunne ikke oprettes";
@@ -88,7 +86,6 @@ namespace Aktie_WebsiteMVCV2.Controllers
         public async Task<IActionResult> Logout()
         {
             await _loginService.SignOutUser(HttpContext);
-
             return RedirectToAction("Login");
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aktie_WebsiteMVCV2.Models
+namespace Aktie_WebsiteMVCV2.Models.AccountModels
 {
     public class RegisterViewModel
     {

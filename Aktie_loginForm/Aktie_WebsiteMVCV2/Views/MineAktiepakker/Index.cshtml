@@ -1,29 +1,18 @@
-﻿@model Tuple<Aktie_WebsiteMVCV2.DTO.Abonnement.AbonnementResponse,
-List < Aktie_WebsiteMVCV2.DTO.Stock.GlobalQuoteDto >>
+﻿@model Aktie_WebsiteMVCV2.Models.AktiePakkerModels.MineAktiepakkerView
 
 @{
     ViewData["Title"] = "Mine aktiepakker";
 
-    var abonnement = Model?.Item1;
-    var stocks = Model?.Item2;
+    var abonnement = Model?.Abonnement;
+    var stocks = Model?.Stocks;
 
-    string pakkeNavn = "";
-
-    if (abonnement != null)
+    string pakkeNavn = abonnement?.KategoriId switch
     {
-        if (abonnement.KategoriId == 1)
-        {
-            pakkeNavn = "Basis";
-        }
-        else if (abonnement.KategoriId == 2)
-        {
-            pakkeNavn = "Pro";
-        }
-        else if (abonnement.KategoriId == 3)
-        {
-            pakkeNavn = "Premium";
-        }
-    }
+        1 => "Basis",
+        2 => "Pro",
+        3 => "Premium",
+        _ => ""
+    };
 }
 
 <h1>Mine aktiepakker</h1>
