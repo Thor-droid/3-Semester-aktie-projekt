@@ -11,13 +11,13 @@ namespace Tests
         public void Subscribe_ReturnererFalse_NaarPakkeErFuld()
         {
             // Arrange
-            var repoMock = new Mock<AbonnementRepository>(null);
+            var repoMock = new Mock<AbonnementAccess>(null);
 
             repoMock
                 .Setup(r => r.Subscribe(17, 1, 1))
                 .Returns(false); // simuler "fuld pakke"
 
-            var service = new AbonnementService(repoMock.Object);
+            var service = new AbonnementLogic(repoMock.Object);
 
             // Act
             var result = service.Subscribe(17, 1, 1);

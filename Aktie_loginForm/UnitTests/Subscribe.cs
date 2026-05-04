@@ -11,7 +11,7 @@ public class AbonnementControllerTests
     public void Subscribe_ReturnererOk_NaarTilmeldingLykkes()
     {
         // Arrange
-        var serviceMock = new Mock<AbonnementService>(null);
+        var serviceMock = new Mock<AbonnementLogic>(null);
 
         serviceMock
             .Setup(s => s.Subscribe(17, 1, 1))
