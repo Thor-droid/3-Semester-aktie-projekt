@@ -28,20 +28,11 @@ namespace Aktie_WebsiteMVCV2.BusinessLogicLayer
 
             if (response.IsSuccessStatusCode)
             {
-               return new AbonnementOutcome
-                {
-                    Aktiepakke = pakkeId,
-                    KategoriId = kategoriId,
-                    Message = "Abonnement oprettet succesfuldt"
-                };
+                return new AbonnementOutcome(pakkeId, kategoriId, "Success");
             }
 
-            return new AbonnementOutcome
-            {
-                Aktiepakke = pakkeId,
-                KategoriId = kategoriId,
-                Message = "Kunne ikke oprette abonnement"
-            };
+            return new AbonnementOutcome(pakkeId, kategoriId, "Fejl");
+            
         }
 
     }
