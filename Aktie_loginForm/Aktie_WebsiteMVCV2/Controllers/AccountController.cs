@@ -1,9 +1,7 @@
-﻿using Aktie_WebsiteMVCV2.DTO.Stock;
-using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebsiteMVCV2.Models;
 using Aktie_WebsiteMVCV2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json;
 
 namespace Aktie_WebsiteMVCV2.Controllers
 {
