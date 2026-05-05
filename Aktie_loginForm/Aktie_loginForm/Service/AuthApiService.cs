@@ -26,5 +26,11 @@ namespace Aktie_loginForm.Services
 
             return await _httpClient.PostAsJsonAsync($"{url}/register", model);
         }
+
+        public async Task<HttpResponseMessage> DeleteUserByEmail(string email)
+        {
+            string url = ConfigurationManager.AppSettings["AuthApiUrl"];
+            return await _httpClient.DeleteAsync($"{url}/delete/{Uri.EscapeDataString(email)}");
+        }
     }
 }

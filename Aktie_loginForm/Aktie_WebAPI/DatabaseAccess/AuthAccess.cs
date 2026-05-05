@@ -85,5 +85,18 @@ namespace Aktie_WebAPI.DatabaseAccess
                 IsAdmin = isAdmin
             };
         }
+
+        public bool DeleteUserByEmail(string email)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = "DELETE FROM Customers WHERE Email = @Email";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
     }
   }

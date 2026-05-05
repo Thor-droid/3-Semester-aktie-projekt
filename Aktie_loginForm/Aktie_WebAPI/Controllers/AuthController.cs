@@ -37,5 +37,17 @@ namespace Aktie_WebAPI.Controllers
 
             return result;
         }
+
+        [HttpDelete("delete/{email}")]
+        public ActionResult DeleteUserByEmail(string email)
+        {
+            var result = authService.DeleteUserByEmail(email);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }
