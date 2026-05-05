@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aktie_loginForm.Models
+namespace Aktie_loginForm.Model
 {
     public class RegisterViewModel
     {

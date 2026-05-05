@@ -1,6 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Aktie_WebAPI.Models;
+using Aktie_WebsiteMVCV2.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Aktie_WebAPI.Models;
 
 namespace Aktie_WebAPI.DatabaseAccess
 {
@@ -19,10 +20,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                SELECT 1
-                FROM Customers
-                WHERE Email = @Email OR KundeNavn = @Name";
+            string sql = @"SELECT 1 FROM Customers WHERE Email = @Email OR KundeNavn = @Name";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", email);
@@ -36,10 +34,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID)
-                VALUES (@Email, @Name, @Password, NULL)";
-
+            string sql = @"INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID) VALUES (@Email, @Name, @Password, NULL)";
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", model.Email);
             cmd.Parameters.AddWithValue("@Name", model.KundeNavn);
@@ -47,17 +42,33 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             return cmd.ExecuteNonQuery() > 0;
         }
+        public List<UserViewModel> GetAllUsers()
+        {
+            var users = new List<UserViewModel>();
+
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = "SELECT Id, Navn, Email FROM Customers";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            using SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var user = new UserViewModel( (int)reader["Id"], reader["Navn"]?.ToString() ?? "", reader["Email"]?.ToString() ?? ""
+                );
+                users.Add(user);
+            }
+            return users;
+        }
 
         public LoginResponse? Login(LoginModel model)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-        SELECT KundeID, KundeNavn, AbonnementID, IsAdmin
-        FROM Customers
-        WHERE Email = @Email AND PasswordHash = @Password";
-
+            string sql = @"SELECT KundeID, KundeNavn, AbonnementID, IsAdmin FROM Customers WHERE Email = @Email AND PasswordHash = @Password";
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", model.Email);
             cmd.Parameters.AddWithValue("@Password", model.Password);
@@ -85,6 +96,19 @@ namespace Aktie_WebAPI.DatabaseAccess
             }
 
             return new LoginResponse(true, kundeId, navn, abonnementId, isAdmin);
+        }
+
+        public bool DeleteUserByEmail(string email)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = "DELETE FROM Customers WHERE Email = @Email";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            return cmd.ExecuteNonQuery() > 0;
         }
     }
   }

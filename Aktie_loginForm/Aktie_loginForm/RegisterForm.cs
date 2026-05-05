@@ -1,4 +1,4 @@
-﻿using Aktie_loginForm.Models;    // RegisterViewModel
+﻿using Aktie_loginForm.Model;    // RegisterViewModel
 using Aktie_loginForm.Services;   // AuthApiService
 using System;
 using System.Windows.Forms;
@@ -16,7 +16,7 @@ namespace Aktie_loginForm
 
         private async void btnRegister_Click(object sender, EventArgs e)
         {
-            // 🔒 Basic validation
+            // Basic validation
             if (string.IsNullOrWhiteSpace(textName.Text) ||
                 string.IsNullOrWhiteSpace(textEmail.Text) ||
                 string.IsNullOrWhiteSpace(textPassword.Text))

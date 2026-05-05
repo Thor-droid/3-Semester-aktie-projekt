@@ -14,10 +14,7 @@ namespace Aktie_WebsiteMVCV2.Services
             _config = config;
         }
 
-        public async Task<HttpResponseMessage> Subscribe(
-            int kundeId,
-            int kategoriId,
-            int aktiepakkeId)
+        public async Task<HttpResponseMessage> Subscribe(int kundeId,int kategoriId,int aktiepakkeId)
         {
             string url = _config["ApiSettings:AbonnementApiUrl"];
 

@@ -1,5 +1,6 @@
 ﻿using Aktie_WebAPI.DatabaseAccess;
 using Aktie_WebAPI.Models;
+using Aktie_WebsiteMVCV2.Models;
 
 namespace Aktie_WebAPI.BusinessLogic
 {
@@ -39,6 +40,19 @@ namespace Aktie_WebAPI.BusinessLogic
             }
         }
 
+        public ApiResponse DeleteUserByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return ApiResponse.Fail("Email mangler");
+
+            bool deleted = _authAccess.DeleteUserByEmail(email);
+
+            if (deleted)
+                return ApiResponse.Ok("Bruger slettet");
+
+            return ApiResponse.Fail("Bruger kunne ikke findes");
+        }
+
         //virtual for at kunne mocke i tests
         public virtual LoginResponse? Login(LoginModel model)
         {
@@ -48,6 +62,10 @@ namespace Aktie_WebAPI.BusinessLogic
             }
 
             return _authAccess.Login(model);
+        }
+        public List<UserViewModel> GetAllUsers()
+        {
+            return _authAccess.GetAllUsers();
         }
     }
 }

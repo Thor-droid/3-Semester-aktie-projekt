@@ -14,15 +14,12 @@
                 new Claim("IsAdmin", result.IsAdmin.ToString())
             };
 
-            var identity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
 
             var principal = new ClaimsPrincipal(identity);
 
             await httpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal);
+                CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         public async Task SignOutUser(HttpContext httpContext)
