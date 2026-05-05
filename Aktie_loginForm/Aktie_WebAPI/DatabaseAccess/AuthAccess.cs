@@ -70,20 +70,21 @@ namespace Aktie_WebAPI.DatabaseAccess
             int kundeId = Convert.ToInt32(reader["KundeID"]);
             string navn = reader["KundeNavn"].ToString();
 
-            int? abonnementId = reader["AbonnementID"] == DBNull.Value
-                ? null
-                : Convert.ToInt32(reader["AbonnementID"]);
+            int? abonnementId = null;
 
-            bool isAdmin = Convert.ToBoolean(reader["IsAdmin"]);
-
-            return new LoginResponse
+            if (reader["AbonnementID"] != DBNull.Value)
             {
-                Success = true,
-                KundeId = kundeId,
-                Navn = navn,
-                AbonnementId = abonnementId,
-                IsAdmin = isAdmin
-            };
+                abonnementId = Convert.ToInt32(reader["AbonnementID"]);
+            }
+
+            bool isAdmin = false;
+
+            if (reader["IsAdmin"] != DBNull.Value)
+            {
+                isAdmin = Convert.ToBoolean(reader["IsAdmin"]);
+            }
+
+            return new LoginResponse(true, kundeId, navn, abonnementId, isAdmin);
         }
 
         public bool DeleteUserByEmail(string email)
