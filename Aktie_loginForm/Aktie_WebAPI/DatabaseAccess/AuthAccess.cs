@@ -1,6 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Aktie_WebAPI.Models;
+using Aktie_WebsiteMVCV2.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Aktie_WebAPI.Models;
 
 namespace Aktie_WebAPI.DatabaseAccess
 {
@@ -37,7 +38,9 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID) VALUES (@Email, @Name, @Password, NULL)";
+            string sql = @"
+                INSERT INTO Customers (Email, KundeNavn, PasswordHash, AbonnementID)
+                VALUES (@Email, @Name, @Password, NULL)";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", model.Email);
@@ -47,14 +50,15 @@ namespace Aktie_WebAPI.DatabaseAccess
             return cmd.ExecuteNonQuery() > 0;
         }
 
-        // Login Response
-
         public LoginResponse? Login(LoginModel model)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"SELECT KundeID, KundeNavn, AbonnementID, IsAdmin FROM Customers WHERE Email = @Email AND PasswordHash = @Password";
+            string sql = @"
+        SELECT KundeID, KundeNavn, AbonnementID, IsAdmin
+        FROM Customers
+        WHERE Email = @Email AND PasswordHash = @Password";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", model.Email);
