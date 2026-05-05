@@ -1,6 +1,8 @@
-﻿using Aktie_loginForm.Models;
+﻿using Aktie_loginForm.Model;
+using Aktie_loginForm.Models;
 using Aktie_loginForm.Services;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 
 namespace Aktie_loginForm.BusinessLogic
 {
@@ -39,5 +41,10 @@ namespace Aktie_loginForm.BusinessLogic
 
             return LoginResult.Ok(user);
         }
+        public async Task<List<UserViewModel>> GetAllUsers()
+        {
+            return await _authService.GetAllUsers();
+        }
+
     }
 }

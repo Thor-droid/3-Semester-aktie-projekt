@@ -1,4 +1,4 @@
-﻿using Aktie_loginForm.Models;    // RegisterViewModel
+﻿using Aktie_loginForm.Model;    // RegisterViewModel
 using Aktie_loginForm.Services;   // AuthApiService
 using System;
 using System.Windows.Forms;

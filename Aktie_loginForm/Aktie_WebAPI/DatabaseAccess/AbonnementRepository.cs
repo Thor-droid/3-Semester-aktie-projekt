@@ -22,11 +22,7 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             try
             {
-                string alreadySubscribedSql = @"
-                    SELECT COUNT(*)
-                    FROM Abonnement
-                    WHERE KundeID = @KundeID
-                    AND KategoriID = @KategoriID";
+                string alreadySubscribedSql = @"SELECT COUNT(*) FROM Abonnement WHERE KundeID = @KundeID AND KategoriID = @KategoriID";
 
                 using (SqlCommand cmd = new SqlCommand(alreadySubscribedSql, conn, transaction))
                 {
@@ -42,10 +38,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                string checkSql = @"
-                    SELECT 
-                        k.MaxBrugere,
-                        COUNT(a.AbonnementID) AS CurrentUsers
+                string checkSql = @"SELECT k.MaxBrugere, COUNT(a.AbonnementID) AS CurrentUsers
                     FROM Kategori k
                     LEFT JOIN Abonnement a ON a.KategoriID = k.KategoriID
                     WHERE k.KategoriID = @KategoriID
@@ -76,10 +69,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                     return false;
                 }
 
-                string insertAbonnementSql = @"
-                    INSERT INTO Abonnement (Dato, KategoriID, KundeID)
-                    OUTPUT INSERTED.AbonnementID
-                    VALUES (GETDATE(), @KategoriID, @KundeID)";
+                string insertAbonnementSql = @"INSERT INTO Abonnement (Dato, KategoriID, KundeID) OUTPUT INSERTED.AbonnementID VALUES (GETDATE(), @KategoriID, @KundeID)";
 
                 int abonnementId;
 
@@ -91,9 +81,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                     abonnementId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                string linkSql = @"
-                    INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID)
-                    VALUES (@AktiepakkeID, @AbonnementID)";
+                string linkSql = @"INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID) VALUES (@AktiepakkeID, @AbonnementID)";
 
                 using (SqlCommand cmd = new SqlCommand(linkSql, conn, transaction))
                 {
@@ -118,11 +106,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                SELECT TOP 1 KategoriID
-                FROM Abonnement
-                WHERE KundeID = @KundeID
-                ORDER BY Dato DESC";
+            string sql = @"SELECT TOP 1 KategoriID FROM AbonnementWHERE KundeID = @KundeID ORDER BY Dato DESC";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@KundeID", kundeId);
@@ -140,10 +124,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                SELECT COUNT(*)
-                FROM Abonnement
-                WHERE KategoriID = @KategoriID";
+            string sql = @"SELECT COUNT(*) FROM Abonnement WHERE KategoriID = @KategoriID";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@KategoriID", kategoriId);

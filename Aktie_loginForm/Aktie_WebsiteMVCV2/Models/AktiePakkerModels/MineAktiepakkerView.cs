@@ -8,9 +8,7 @@ namespace Aktie_WebsiteMVCV2.Models.AktiePakkerModels
         public AbonnementResponse Abonnement { get; }
         public List<GlobalQuoteDto> Stocks { get; }
 
-        public MineAktiepakkerView(
-            AbonnementResponse abonnement,
-            List<GlobalQuoteDto> stocks)
+        public MineAktiepakkerView(AbonnementResponse abonnement, List<GlobalQuoteDto> stocks)
         {
             Abonnement = abonnement;
             Stocks = stocks ?? new List<GlobalQuoteDto>();

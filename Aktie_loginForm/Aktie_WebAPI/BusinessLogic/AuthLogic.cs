@@ -1,5 +1,6 @@
 ﻿using Aktie_WebAPI.DatabaseAccess;
 using Aktie_WebAPI.Models;
+using Aktie_WebsiteMVCV2.Models;
 
 namespace Aktie_WebAPI.BusinessLogic
 {
@@ -48,6 +49,10 @@ namespace Aktie_WebAPI.BusinessLogic
             }
 
             return _authAccess.Login(model);
+        }
+        public List<UserViewModel> GetAllUsers()
+        {
+            return _authAccess.GetAllUsers();
         }
     }
 }
