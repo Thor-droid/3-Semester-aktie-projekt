@@ -40,6 +40,19 @@ namespace Aktie_WebAPI.BusinessLogic
             }
         }
 
+        public ApiResponse DeleteUserByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return ApiResponse.Fail("Email mangler");
+
+            bool deleted = _authAccess.DeleteUserByEmail(email);
+
+            if (deleted)
+                return ApiResponse.Ok("Bruger slettet");
+
+            return ApiResponse.Fail("Bruger kunne ikke findes");
+        }
+
         //virtual for at kunne mocke i tests
         public virtual LoginResponse? Login(LoginModel model)
         {

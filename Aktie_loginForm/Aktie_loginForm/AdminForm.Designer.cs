@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             buttonOpretBruger = new Button();
+            buttonSletBruger = new Button();
             SuspendLayout();
             // 
             // buttonOpretBruger
@@ -41,11 +42,22 @@
             buttonOpretBruger.UseVisualStyleBackColor = true;
             buttonOpretBruger.Click += buttonOpretBruger_Click;
             // 
+            // buttonSletBruger
+            // 
+            buttonSletBruger.Location = new Point(264, 241);
+            buttonSletBruger.Name = "buttonSletBruger";
+            buttonSletBruger.Size = new Size(295, 46);
+            buttonSletBruger.TabIndex = 1;
+            buttonSletBruger.Text = "Slet Bruger";
+            buttonSletBruger.UseVisualStyleBackColor = true;
+            buttonSletBruger.Click += buttonSletBruger_Click;
+            // 
             // AdminForm
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(904, 538);
+            Controls.Add(buttonSletBruger);
             Controls.Add(buttonOpretBruger);
             Name = "AdminForm";
             Text = "AdminForm";
@@ -55,5 +67,6 @@
         #endregion
 
         private Button buttonOpretBruger;
+        private Button buttonSletBruger;
     }
 }
