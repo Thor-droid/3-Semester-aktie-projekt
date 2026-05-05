@@ -73,6 +73,9 @@ CREATE TABLE Notifikation (
     FOREIGN KEY (KundeID) REFERENCES Customers(KundeID)
 );
 
+ALTER TABLE Kategori
+ADD AntalBrugere INT NOT NULL DEFAULT 0;
+
 Clear database ( til test )
 DELETE FROM AktiepakkeAbonnement;
 DELETE FROM Abonnement;

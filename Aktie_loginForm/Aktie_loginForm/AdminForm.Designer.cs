@@ -30,13 +30,15 @@
         {
             buttonOpretBruger = new Button();
             buttonSletBruger = new Button();
+            VisAlleBrugere = new Button();
             SuspendLayout();
             // 
             // buttonOpretBruger
             // 
-            buttonOpretBruger.Location = new Point(264, 175);
+            buttonOpretBruger.Location = new Point(142, 82);
+            buttonOpretBruger.Margin = new Padding(2, 1, 2, 1);
             buttonOpretBruger.Name = "buttonOpretBruger";
-            buttonOpretBruger.Size = new Size(295, 46);
+            buttonOpretBruger.Size = new Size(159, 22);
             buttonOpretBruger.TabIndex = 0;
             buttonOpretBruger.Text = "Opret Bruger";
             buttonOpretBruger.UseVisualStyleBackColor = true;
@@ -44,21 +46,35 @@
             // 
             // buttonSletBruger
             // 
-            buttonSletBruger.Location = new Point(264, 241);
+            buttonSletBruger.Location = new Point(142, 113);
+            buttonSletBruger.Margin = new Padding(2, 1, 2, 1);
             buttonSletBruger.Name = "buttonSletBruger";
-            buttonSletBruger.Size = new Size(295, 46);
+            buttonSletBruger.Size = new Size(159, 22);
             buttonSletBruger.TabIndex = 1;
             buttonSletBruger.Text = "Slet Bruger";
             buttonSletBruger.UseVisualStyleBackColor = true;
             buttonSletBruger.Click += buttonSletBruger_Click;
             // 
+            // VisAlleBrugere
+            // 
+            VisAlleBrugere.Location = new Point(142, 148);
+            VisAlleBrugere.Margin = new Padding(2, 1, 2, 1);
+            VisAlleBrugere.Name = "VisAlleBrugere";
+            VisAlleBrugere.Size = new Size(159, 22);
+            VisAlleBrugere.TabIndex = 2;
+            VisAlleBrugere.Text = "Vis Brugere";
+            VisAlleBrugere.UseVisualStyleBackColor = true;
+            VisAlleBrugere.Click += VisAlleBrugere_Click;
+            // 
             // AdminForm
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(904, 538);
+            ClientSize = new Size(487, 252);
+            Controls.Add(VisAlleBrugere);
             Controls.Add(buttonSletBruger);
             Controls.Add(buttonOpretBruger);
+            Margin = new Padding(2, 1, 2, 1);
             Name = "AdminForm";
             Text = "AdminForm";
             ResumeLayout(false);
@@ -68,5 +84,7 @@
 
         private Button buttonOpretBruger;
         private Button buttonSletBruger;
+        private Button button1;
+        private Button VisAlleBrugere;
     }
 }

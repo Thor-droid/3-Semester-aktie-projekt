@@ -13,7 +13,8 @@ namespace Aktie_WebAPI.DatabaseAccess
         }
 
         //virtual er til unit test
-        public bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
+        //virtual er til unit test
+        public virtual bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
@@ -22,11 +23,12 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             try
             {
+                // tjekker om kunden allerede har abonnement i kategorien
                 string alreadySubscribedSql = @"
-                    SELECT COUNT(*)
-                    FROM Abonnement
-                    WHERE KundeID = @KundeID
-                    AND KategoriID = @KategoriID";
+            SELECT COUNT(*)
+            FROM Abonnement
+            WHERE KundeID = @KundeID
+            AND KategoriID = @KategoriID";
 
                 using (SqlCommand cmd = new SqlCommand(alreadySubscribedSql, conn, transaction))
                 {
@@ -42,44 +44,31 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                string checkSql = @"
-                    SELECT 
-                        k.MaxBrugere,
-                        COUNT(a.AbonnementID) AS CurrentUsers
-                    FROM Kategori k
-                    LEFT JOIN Abonnement a ON a.KategoriID = k.KategoriID
-                    WHERE k.KategoriID = @KategoriID
-                    GROUP BY k.MaxBrugere";
+                // concurrency-sikring: tjekker plads og reserverer plads i samme query
+                string updateKategoriSql = @"
+            UPDATE Kategori
+            SET AntalBrugere = AntalBrugere + 1
+            WHERE KategoriID = @KategoriID
+            AND AntalBrugere < MaxBrugere";
 
-                int maxBrugere;
-                int currentUsers;
-
-                using (SqlCommand cmd = new SqlCommand(checkSql, conn, transaction))
+                using (SqlCommand cmd = new SqlCommand(updateKategoriSql, conn, transaction))
                 {
                     cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
 
-                    using SqlDataReader reader = cmd.ExecuteReader();
+                    int rowsAffected = cmd.ExecuteNonQuery();
 
-                    if (!reader.Read())
+                    if (rowsAffected == 0)
                     {
                         transaction.Rollback();
                         return false;
                     }
-
-                    maxBrugere = Convert.ToInt32(reader["MaxBrugere"]);
-                    currentUsers = Convert.ToInt32(reader["CurrentUsers"]);
                 }
 
-                if (currentUsers >= maxBrugere)
-                {
-                    transaction.Rollback();
-                    return false;
-                }
-
+                // opretter abonnement
                 string insertAbonnementSql = @"
-                    INSERT INTO Abonnement (Dato, KategoriID, KundeID)
-                    OUTPUT INSERTED.AbonnementID
-                    VALUES (GETDATE(), @KategoriID, @KundeID)";
+            INSERT INTO Abonnement (Dato, KategoriID, KundeID)
+            OUTPUT INSERTED.AbonnementID
+            VALUES (GETDATE(), @KategoriID, @KundeID)";
 
                 int abonnementId;
 
@@ -91,9 +80,10 @@ namespace Aktie_WebAPI.DatabaseAccess
                     abonnementId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
+                // kobler abonnement til aktiepakke
                 string linkSql = @"
-                    INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID)
-                    VALUES (@AktiepakkeID, @AbonnementID)";
+            INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID)
+            VALUES (@AktiepakkeID, @AbonnementID)";
 
                 using (SqlCommand cmd = new SqlCommand(linkSql, conn, transaction))
                 {

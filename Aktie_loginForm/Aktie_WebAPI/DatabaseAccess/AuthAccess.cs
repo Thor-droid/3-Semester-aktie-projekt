@@ -49,14 +49,14 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = "SELECT Id, Navn, Email FROM Customers";
+            string sql = "SELECT KundeID, KundeNavn, Email FROM Customers";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             using SqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
-                var user = new UserViewModel( (int)reader["Id"], reader["Navn"]?.ToString() ?? "", reader["Email"]?.ToString() ?? ""
+                var user = new UserViewModel( (int)reader["KundeID"], reader["KundeNavn"]?.ToString() ?? "", reader["Email"]?.ToString() ?? ""
                 );
                 users.Add(user);
             }

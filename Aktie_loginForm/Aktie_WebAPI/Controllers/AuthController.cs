@@ -38,18 +38,17 @@ namespace Aktie_WebAPI.Controllers
 
             return result;
         }
-        [HttpPost("all")]
+        [HttpGet("users")]
         public ActionResult GetAllUsers()
         {
             var users = _authLogic.GetAllUsers();
             return Ok(users);
-            
         }
 
         [HttpDelete("delete/{email}")]
         public ActionResult DeleteUserByEmail(string email)
         {
-            var result = authService.DeleteUserByEmail(email);
+            var result = _authLogic.DeleteUserByEmail(email);
 
             if (!result.Success)
                 return BadRequest(result);

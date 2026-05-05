@@ -30,5 +30,11 @@ namespace Aktie_loginForm
             using DeleteUserForm deleteUserForm = new DeleteUserForm();
             deleteUserForm.ShowDialog();
         }
+
+        private void VisAlleBrugere_Click(object sender, EventArgs e)
+        {
+            using VisAlleBrugere visallebrugere = new VisAlleBrugere();
+            visallebrugere.ShowDialog();
+        }
     }
 }
