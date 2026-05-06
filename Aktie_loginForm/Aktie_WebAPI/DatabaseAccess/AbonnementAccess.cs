@@ -44,16 +44,52 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                // concurrency-sikring: tjekker plads og reserverer plads i samme query
+                int antalBrugere;
+                int maxBrugere;
+                byte[] rowVersion;
+
+                // læser kategoriens nuværende værdier
+                string getKategoriSql = @"
+            SELECT AntalBrugere, MaxBrugere, RowVersion
+            FROM Kategori
+            WHERE KategoriID = @KategoriID";
+
+                using (SqlCommand cmd = new SqlCommand(getKategoriSql, conn, transaction))
+                {
+                    cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
+
+                    using SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (!reader.Read())
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    antalBrugere = Convert.ToInt32(reader["AntalBrugere"]);
+                    maxBrugere = Convert.ToInt32(reader["MaxBrugere"]);
+                    rowVersion = (byte[])reader["RowVersion"];
+                }
+
+                if (antalBrugere >= maxBrugere)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+
+                // optimistic concurrency:
+                // opdaterer kun hvis RowVersion stadig er den samme som den vi læste
                 string updateKategoriSql = @"
             UPDATE Kategori
             SET AntalBrugere = AntalBrugere + 1
             WHERE KategoriID = @KategoriID
+            AND RowVersion = @RowVersion
             AND AntalBrugere < MaxBrugere";
 
                 using (SqlCommand cmd = new SqlCommand(updateKategoriSql, conn, transaction))
                 {
                     cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
+                    cmd.Parameters.Add("@RowVersion", System.Data.SqlDbType.Timestamp).Value = rowVersion;
 
                     int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -80,7 +116,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                     abonnementId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // kobler abonnement til aktiepakke
+                // kobler abonnementet til aktiepakken
                 string linkSql = @"
             INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID)
             VALUES (@AktiepakkeID, @AbonnementID)";
