@@ -36,5 +36,11 @@ namespace Aktie_loginForm
             using VisAlleBrugere visallebrugere = new VisAlleBrugere();
             visallebrugere.ShowDialog();
         }
+
+        private void buttonRedigerBruger_Click(object sender, EventArgs e)
+        {
+            using EditUserForm editUserForm = new EditUserForm();
+            editUserForm.ShowDialog();
+        }
     }
 }

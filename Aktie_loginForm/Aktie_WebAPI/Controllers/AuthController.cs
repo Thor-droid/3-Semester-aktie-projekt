@@ -55,5 +55,16 @@ namespace Aktie_WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut("update")]
+        public ActionResult UpdateUser(RegisterModel model)
+        {
+            var result = _authLogic.UpdateUser(model);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }

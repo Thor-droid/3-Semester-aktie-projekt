@@ -31,14 +31,15 @@
             buttonOpretBruger = new Button();
             buttonSletBruger = new Button();
             VisAlleBrugere = new Button();
+            buttonRedigerBruger = new Button();
             SuspendLayout();
             // 
             // buttonOpretBruger
             // 
-            buttonOpretBruger.Location = new Point(142, 82);
-            buttonOpretBruger.Margin = new Padding(2, 1, 2, 1);
+            buttonOpretBruger.Location = new Point(264, 175);
+            buttonOpretBruger.Margin = new Padding(4, 2, 4, 2);
             buttonOpretBruger.Name = "buttonOpretBruger";
-            buttonOpretBruger.Size = new Size(159, 22);
+            buttonOpretBruger.Size = new Size(295, 47);
             buttonOpretBruger.TabIndex = 0;
             buttonOpretBruger.Text = "Opret Bruger";
             buttonOpretBruger.UseVisualStyleBackColor = true;
@@ -46,10 +47,10 @@
             // 
             // buttonSletBruger
             // 
-            buttonSletBruger.Location = new Point(142, 113);
-            buttonSletBruger.Margin = new Padding(2, 1, 2, 1);
+            buttonSletBruger.Location = new Point(264, 241);
+            buttonSletBruger.Margin = new Padding(4, 2, 4, 2);
             buttonSletBruger.Name = "buttonSletBruger";
-            buttonSletBruger.Size = new Size(159, 22);
+            buttonSletBruger.Size = new Size(295, 47);
             buttonSletBruger.TabIndex = 1;
             buttonSletBruger.Text = "Slet Bruger";
             buttonSletBruger.UseVisualStyleBackColor = true;
@@ -57,24 +58,35 @@
             // 
             // VisAlleBrugere
             // 
-            VisAlleBrugere.Location = new Point(142, 148);
-            VisAlleBrugere.Margin = new Padding(2, 1, 2, 1);
+            VisAlleBrugere.Location = new Point(264, 372);
+            VisAlleBrugere.Margin = new Padding(4, 2, 4, 2);
             VisAlleBrugere.Name = "VisAlleBrugere";
-            VisAlleBrugere.Size = new Size(159, 22);
+            VisAlleBrugere.Size = new Size(295, 47);
             VisAlleBrugere.TabIndex = 2;
             VisAlleBrugere.Text = "Vis Brugere";
             VisAlleBrugere.UseVisualStyleBackColor = true;
             VisAlleBrugere.Click += VisAlleBrugere_Click;
             // 
+            // buttonRedigerBruger
+            // 
+            buttonRedigerBruger.Location = new Point(264, 307);
+            buttonRedigerBruger.Name = "buttonRedigerBruger";
+            buttonRedigerBruger.Size = new Size(295, 46);
+            buttonRedigerBruger.TabIndex = 3;
+            buttonRedigerBruger.Text = "Rediger Bruger";
+            buttonRedigerBruger.UseVisualStyleBackColor = true;
+            buttonRedigerBruger.Click += buttonRedigerBruger_Click;
+            // 
             // AdminForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(487, 252);
+            ClientSize = new Size(904, 538);
+            Controls.Add(buttonRedigerBruger);
             Controls.Add(VisAlleBrugere);
             Controls.Add(buttonSletBruger);
             Controls.Add(buttonOpretBruger);
-            Margin = new Padding(2, 1, 2, 1);
+            Margin = new Padding(4, 2, 4, 2);
             Name = "AdminForm";
             Text = "AdminForm";
             ResumeLayout(false);
@@ -86,5 +98,6 @@
         private Button buttonSletBruger;
         private Button button1;
         private Button VisAlleBrugere;
+        private Button buttonRedigerBruger;
     }
 }
