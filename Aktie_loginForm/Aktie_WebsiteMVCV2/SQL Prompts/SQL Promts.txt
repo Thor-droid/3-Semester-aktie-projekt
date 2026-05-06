@@ -64,13 +64,33 @@ CREATE TABLE Customers (
     AbonnementID INT,
     FOREIGN KEY (AbonnementID) REFERENCES Abonnement(AbonnementID)
 );
-CREATE TABLE Notifikation (
-    NotifikationID INT IDENTITY(1,1) PRIMARY KEY,
-    Titel VARCHAR(255),
-    Besked TEXT,
-    KundeID INT,
+CREATE TABLE PriceAlerts (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
 
-    FOREIGN KEY (KundeID) REFERENCES Customers(KundeID)
+    UserId NVARCHAR(100) NOT NULL,
+
+    StockSymbol NVARCHAR(10) NOT NULL,
+
+    TargetPrice DECIMAL(18,2) NOT NULL,
+
+    IsTriggered BIT NOT NULL DEFAULT 0,
+
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+
+    TriggeredAt DATETIME2 NULL
+);
+CREATE TABLE Notifications (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+
+    UserId NVARCHAR(100) NOT NULL,
+
+    PriceAlertId INT NOT NULL,
+
+    Message NVARCHAR(255) NOT NULL,
+
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+
+    FOREIGN KEY (PriceAlertId) REFERENCES PriceAlerts(Id)
 );
 
 ALTER TABLE Kategori
