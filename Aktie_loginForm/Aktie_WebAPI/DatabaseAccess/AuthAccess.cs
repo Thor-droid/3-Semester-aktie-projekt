@@ -9,7 +9,7 @@ namespace Aktie_WebAPI.DatabaseAccess
     {
         private readonly string connectionString;
 
-        // 🔹 Hent fra appsettings.json
+        // Hent fra appsettings.json
         public AuthAccess(IConfiguration config)
         {
             connectionString = config.GetConnectionString("DefaultConnection");
@@ -98,6 +98,8 @@ namespace Aktie_WebAPI.DatabaseAccess
             return new LoginResponse(true, kundeId, navn, abonnementId, isAdmin);
         }
 
+        //DELETE USER
+
         public bool DeleteUserByEmail(string email)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
@@ -107,6 +109,23 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Email", email);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        // Opdater Bruger ud fra email
+
+        public bool UpdateUser(RegisterModel model)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = @"UPDATE Customers SET KundeNavn = @Name, PasswordHash = @Password WHERE Email = @Email";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Email", model.Email);
+            cmd.Parameters.AddWithValue("@Name", model.KundeNavn);
+            cmd.Parameters.AddWithValue("@Password", model.Password);
 
             return cmd.ExecuteNonQuery() > 0;
         }

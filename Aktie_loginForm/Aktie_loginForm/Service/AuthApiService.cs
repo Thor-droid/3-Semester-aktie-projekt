@@ -42,5 +42,11 @@ namespace Aktie_loginForm.Services
             string url = ConfigurationManager.AppSettings["AuthApiUrl"];
             return await _httpClient.DeleteAsync($"{url}/delete/{Uri.EscapeDataString(email)}");
         }
+
+        public async Task<HttpResponseMessage> UpdateUser(RegisterViewModel model)
+        {
+            string url = ConfigurationManager.AppSettings["AuthApiUrl"];
+            return await _httpClient.PutAsJsonAsync($"{url}/update", model);
+        }
     }
 }
