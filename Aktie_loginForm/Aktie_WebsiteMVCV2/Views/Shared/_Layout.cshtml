@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,66 +12,53 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-sm navbar-dark custom-navbar">
+            <div class="container-fluid px-4">
 
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
                     Aktie_WebsiteMVCV2
                 </a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#mainNavbar"
-                        aria-controls="mainNavbar"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
+                        data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="mainNavbar">
+                <div class="collapse navbar-collapse" id="mainNavbar">
 
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Abonnement" asp-action="Abonnement">Abonnementer</a>
+                            <a class="nav-link" asp-controller="Abonnement" asp-action="Abonnement">Abonnementer</a>
                         </li>
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="MineAktiepakker" asp-action="Index">
-                                    Mine aktiepakker
-                                </a>
+                                <a class="nav-link" asp-controller="MineAktiepakker" asp-action="Index">Mine aktiepakker</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="AktieView">
-                                    Søg
-                                </a>
+                                <a class="nav-link" asp-controller="Account" asp-action="AktieView">Søg</a>
                             </li>
                         }
                     </ul>
 
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">
-                                    Logout
-                                </a>
+                                <a class="nav-link login-link" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">
-                                    Login
-                                </a>
+                                <a class="nav-link login-link" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">
-                                    Register
-                                </a>
+                                <a class="nav-link register-btn" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -81,14 +68,11 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @RenderBody()
+    </main>
 
-    
-    <footer class="border-top footer text-muted">
+    <footer class="custom-footer">
         <div class="container">
             &copy; 2026 - Aktie_WebsiteMVCV2 -
             <a asp-controller="Home" asp-action="Privacy">Privacy</a>

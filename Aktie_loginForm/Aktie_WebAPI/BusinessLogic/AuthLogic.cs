@@ -63,7 +63,7 @@ namespace Aktie_WebAPI.BusinessLogic
 
             return _authAccess.Login(model);
         }
-        public List<UserViewModel> GetAllUsers()
+        public virtual List<UserViewModel> GetAllUsers()
         {
             return _authAccess.GetAllUsers();
         }

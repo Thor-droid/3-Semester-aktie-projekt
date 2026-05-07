@@ -13,7 +13,6 @@ namespace Aktie_WebAPI.DatabaseAccess
         }
 
         //virtual er til unit test
-        //virtual er til unit test
         public virtual bool Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             using SqlConnection conn = new SqlConnection(connectionString);

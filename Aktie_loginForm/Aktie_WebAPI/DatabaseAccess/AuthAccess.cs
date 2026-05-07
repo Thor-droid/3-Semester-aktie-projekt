@@ -42,7 +42,7 @@ namespace Aktie_WebAPI.DatabaseAccess
 
             return cmd.ExecuteNonQuery() > 0;
         }
-        public List<UserViewModel> GetAllUsers()
+        public virtual List<UserViewModel> GetAllUsers()
         {
             var users = new List<UserViewModel>();
 

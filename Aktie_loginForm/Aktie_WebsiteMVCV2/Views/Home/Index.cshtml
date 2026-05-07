@@ -1,8 +1,29 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Forside";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Velkommen til Aktie_WebsiteMVC2</h1>
-    <p>Lad dine investings drømme blive til virkelighed</a>.</p>
-</div>
+<section class="home-hero">
+    <div class="hero-content">
+        <span class="hero-badge">Din vej ind i aktiemarkedet</span>
+
+        <h1>
+            Gør dine investeringsdrømme
+            <span>til virkelighed</span>
+        </h1>
+
+        <p>
+            Find aktier, opret aktiepakker og få et bedre overblik over dine investeringer
+            på en moderne og overskuelig platform.
+        </p>
+
+        <div class="hero-buttons">
+            <a class="primary-btn" asp-controller="Account" asp-action="AktieView">
+                Søg aktier
+            </a>
+
+            <a class="secondary-btn" asp-controller="Abonnement" asp-action="Abonnement">
+                Se abonnementer
+            </a>
+        </div>
+    </div>
+</section>
