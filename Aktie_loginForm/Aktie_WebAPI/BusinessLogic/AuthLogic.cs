@@ -63,7 +63,26 @@ namespace Aktie_WebAPI.BusinessLogic
 
             return _authAccess.Login(model);
         }
-        public virtual List<UserViewModel> GetAllUsers()
+
+        public ApiResponse UpdateUser(RegisterModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Email))
+                return ApiResponse.Fail("Email mangler");
+
+            if (string.IsNullOrWhiteSpace(model.KundeNavn))
+                return ApiResponse.Fail("Navn mangler");
+
+            if (string.IsNullOrWhiteSpace(model.Password))
+                return ApiResponse.Fail("Password mangler");
+
+            bool updated = _authAccess.UpdateUser(model);
+
+            return updated
+                ? ApiResponse.Ok("Bruger opdateret")
+                : ApiResponse.Fail("Kunne ikke finde bruger med den email");
+        }
+
+        public List<UserViewModel> GetAllUsers()
         {
             return _authAccess.GetAllUsers();
         }
