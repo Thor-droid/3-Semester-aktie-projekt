@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Aktie_WebAPI.Models;
+using Aktie_WebAPI.Model;
 using Aktie_WebAPI.BusinessLogic;
 using System.Diagnostics.Eventing.Reader;
 

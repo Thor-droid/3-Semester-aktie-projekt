@@ -1,6 +1,5 @@
 ﻿using Aktie_WebAPI.DatabaseAccess;
-using Aktie_WebAPI.Models;
-using Aktie_WebsiteMVCV2.Models;
+using Aktie_WebAPI.Model;
 
 namespace Aktie_WebAPI.BusinessLogic
 {

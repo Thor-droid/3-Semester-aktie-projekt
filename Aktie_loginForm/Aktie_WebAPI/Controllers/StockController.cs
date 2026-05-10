@@ -1,5 +1,4 @@
 ﻿using Aktie_WebAPI.Service;
-using Aktie_WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aktie_WebAPI.Controllers

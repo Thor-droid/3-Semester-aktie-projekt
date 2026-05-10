@@ -1,6 +1,5 @@
 ﻿using Aktie_WebAPI.Model;
 using Microsoft.EntityFrameworkCore;
-using Aktie_WebAPI.Model;
 
 namespace Aktie_WebAPI.DatabaseAccess
 {

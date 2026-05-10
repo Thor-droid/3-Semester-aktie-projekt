@@ -1,5 +1,5 @@
 ﻿using Aktie_WebAPI.BusinessLogic;
-using Aktie_WebAPI.Models;
+using Aktie_WebAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aktie_WebAPI.Controllers

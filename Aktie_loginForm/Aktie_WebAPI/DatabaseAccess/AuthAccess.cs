@@ -1,5 +1,4 @@
-﻿using Aktie_WebAPI.Models;
-using Aktie_WebsiteMVCV2.Models;
+﻿using Aktie_WebAPI.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 

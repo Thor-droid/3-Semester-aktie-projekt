@@ -1,4 +1,4 @@
-﻿namespace Aktie_WebAPI.Models
+﻿namespace Aktie_WebAPI.Model
 {
     public class LoginResponse
     {
