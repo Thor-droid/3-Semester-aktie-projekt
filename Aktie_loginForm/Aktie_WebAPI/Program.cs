@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Notification builder.
 builder.Services.AddDbContext<NotifAccess>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<PriceAlertRepository>();
 
 // Add services to the container.
 builder.Services.AddControllers();
