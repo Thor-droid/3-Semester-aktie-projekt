@@ -1,7 +1,7 @@
 ﻿using Aktie_WebAPI.BusinessLogic;
 using Aktie_WebAPI.Controllers;
 using Aktie_WebAPI.DatabaseAccess;
-using Aktie_WebAPI.Models;
+using Aktie_WebAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;

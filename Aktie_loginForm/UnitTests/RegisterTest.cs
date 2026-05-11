@@ -1,4 +1,4 @@
-﻿using Aktie_WebAPI.Models;
+﻿using Aktie_WebAPI.Model;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Net;
