@@ -1,6 +1,6 @@
 ﻿using Aktie_WebAPI.BusinessLogic;
 using Aktie_WebAPI.DatabaseAccess;
-using Aktie_WebAPI.Models;
+using Aktie_WebAPI.Model;
 using Aktie_WebsiteMVCV2.Models;
 using Moq;
 using Xunit;
