@@ -1,5 +1,4 @@
-﻿using Aktie_webAPI.Service;
-using Aktie_WebAPI.DatabaseAccess;
+﻿using Aktie_WebAPI.DatabaseAccess;
 using Aktie_WebAPI.Service;
 using System.Globalization;
 

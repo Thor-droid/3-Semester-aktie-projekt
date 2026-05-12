@@ -1,4 +1,3 @@
-using Aktie_webAPI.Service;
 using Aktie_WebAPI.buisnesslogic;
 using Aktie_WebAPI.BusinessLogic;
 using Aktie_WebAPI.DatabaseAccess;
