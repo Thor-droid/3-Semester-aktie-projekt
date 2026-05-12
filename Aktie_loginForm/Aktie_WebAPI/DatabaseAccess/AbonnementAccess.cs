@@ -23,11 +23,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             try
             {
                 // tjekker om kunden allerede har abonnement i kategorien
-                string alreadySubscribedSql = @"
-            SELECT COUNT(*)
-            FROM Abonnement
-            WHERE KundeID = @KundeID
-            AND KategoriID = @KategoriID";
+                string alreadySubscribedSql = @"SELECT COUNT(*) FROM Abonnement WHERE KundeID = @KundeID AND KategoriID = @KategoriID";
 
                 using (SqlCommand cmd = new SqlCommand(alreadySubscribedSql, conn, transaction))
                 {
@@ -48,10 +44,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                 byte[] rowVersion;
 
                 // læser kategoriens nuværende værdier
-                string getKategoriSql = @"
-            SELECT AntalBrugere, MaxBrugere, RowVersion
-            FROM Kategori
-            WHERE KategoriID = @KategoriID";
+                string getKategoriSql = @"SELECT AntalBrugere, MaxBrugere, RowVersion FROM Kategori WHERE KategoriID = @KategoriID";
 
                 using (SqlCommand cmd = new SqlCommand(getKategoriSql, conn, transaction))
                 {
@@ -78,11 +71,8 @@ namespace Aktie_WebAPI.DatabaseAccess
 
                 // optimistic concurrency:
                 // opdaterer kun hvis RowVersion stadig er den samme som den vi læste
-                string updateKategoriSql = @"
-            UPDATE Kategori
-            SET AntalBrugere = AntalBrugere + 1
-            WHERE KategoriID = @KategoriID
-            AND RowVersion = @RowVersion
+                string updateKategoriSql = @" UPDATE Kategori SET AntalBrugere = AntalBrugere + 1 WHERE KategoriID = @KategoriID
+           AND RowVersion = @RowVersion
             AND AntalBrugere < MaxBrugere";
 
                 using (SqlCommand cmd = new SqlCommand(updateKategoriSql, conn, transaction))
