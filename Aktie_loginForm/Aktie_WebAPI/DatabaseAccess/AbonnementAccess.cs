@@ -18,12 +18,19 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
+            // Starter en transaction så alle queries bliver udført samlet.
+            // Hvis noget fejler, rollbackes hele transaktionen.
             using SqlTransaction transaction = conn.BeginTransaction();
 
             try
             {
-                // tjekker om kunden allerede har abonnement i kategorien
-                string alreadySubscribedSql = @"SELECT COUNT(*) FROM Abonnement WHERE KundeID = @KundeID AND KategoriID = @KategoriID";
+                // Tjekker først om kunden allerede har et abonnement
+                // i den valgte kategori.
+                string alreadySubscribedSql = @"
+            SELECT COUNT(*) 
+            FROM Abonnement 
+            WHERE KundeID = @KundeID 
+            AND KategoriID = @KategoriID";
 
                 using (SqlCommand cmd = new SqlCommand(alreadySubscribedSql, conn, transaction))
                 {
@@ -39,49 +46,45 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                int antalBrugere;
-                int maxBrugere;
-                byte[] rowVersion;
-
-                // læser kategoriens nuværende værdier
-                string getKategoriSql = @"SELECT AntalBrugere, MaxBrugere, RowVersion FROM Kategori WHERE KategoriID = @KategoriID";
-
-                using (SqlCommand cmd = new SqlCommand(getKategoriSql, conn, transaction))
-                {
-                    cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
-
-                    using SqlDataReader reader = cmd.ExecuteReader();
-
-                    if (!reader.Read())
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
-
-                    antalBrugere = Convert.ToInt32(reader["AntalBrugere"]);
-                    maxBrugere = Convert.ToInt32(reader["MaxBrugere"]);
-                    rowVersion = (byte[])reader["RowVersion"];
-                }
-
-                if (antalBrugere >= maxBrugere)
-                {
-                    transaction.Rollback();
-                    return false;
-                }
-
-                // optimistic concurrency:
-                // opdaterer kun hvis RowVersion stadig er den samme som den vi læste
-                string updateKategoriSql = @" UPDATE Kategori SET AntalBrugere = AntalBrugere + 1 WHERE KategoriID = @KategoriID
-           AND RowVersion = @RowVersion
+                // ============================
+                // OPTIMISTIC CONCURRENCY
+                // ============================
+                //
+                // Her bliver optimistic concurrency håndteret.
+                //
+                // Ideen er:
+                // Vi forsøger kun at opdatere kategorien HVIS der stadig er plads.
+                //
+                // WHERE AntalBrugere < MaxBrugere sørger for,
+                // at flere brugere ikke kan overskride max-grænsen samtidig.
+                //
+                // Hvis to brugere prøver at subscribe på samme tid,
+                // vil kun den første request kunne opdatere rækken,
+                // når MaxBrugere er nået.
+                //
+                // ExecuteNonQuery returnerer antal rækker der blev ændret.
+                //
+                // Hvis rowsAffected == 0 betyder det:
+                // - kategorien var allerede fuld
+                // - eller en anden bruger nåede at tage den sidste plads først
+                //
+                // På den måde undgår vi race conditions
+                // uden at låse hele tabellen manuelt.
+                //
+                string updateKategoriSql = @"
+            UPDATE Kategori 
+            SET AntalBrugere = AntalBrugere + 1 
+            WHERE KategoriID = @KategoriID
             AND AntalBrugere < MaxBrugere";
 
                 using (SqlCommand cmd = new SqlCommand(updateKategoriSql, conn, transaction))
                 {
                     cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
-                    cmd.Parameters.Add("@RowVersion", System.Data.SqlDbType.Timestamp).Value = rowVersion;
 
                     int rowsAffected = cmd.ExecuteNonQuery();
 
+                    // Hvis ingen rækker blev opdateret,
+                    // rollbackes transaktionen.
                     if (rowsAffected == 0)
                     {
                         transaction.Rollback();
@@ -89,9 +92,9 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                // opretter abonnement
+                // Opretter abonnementet
                 string insertAbonnementSql = @"
-            INSERT INTO Abonnement (Dato, KategoriID, KundeID)
+            INSERT INTO Abonnement (Dato, KategoriID, KundeID) 
             OUTPUT INSERTED.AbonnementID
             VALUES (GETDATE(), @KategoriID, @KundeID)";
 
@@ -105,9 +108,9 @@ namespace Aktie_WebAPI.DatabaseAccess
                     abonnementId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // kobler abonnementet til aktiepakken
+                // Kobler abonnementet sammen med aktiepakken
                 string linkSql = @"
-            INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID)
+            INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID) 
             VALUES (@AktiepakkeID, @AbonnementID)";
 
                 using (SqlCommand cmd = new SqlCommand(linkSql, conn, transaction))
@@ -118,11 +121,13 @@ namespace Aktie_WebAPI.DatabaseAccess
                     cmd.ExecuteNonQuery();
                 }
 
+                // Hvis alt lykkedes commits transaktionen
                 transaction.Commit();
                 return true;
             }
             catch
             {
+                // Hvis noget fejler rollbackes hele transaktionen
                 transaction.Rollback();
                 return false;
             }
