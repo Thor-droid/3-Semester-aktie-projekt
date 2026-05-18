@@ -40,7 +40,7 @@ namespace Aktie_loginForm.Services
         public async Task<HttpResponseMessage> DeleteUserByEmail(string email)
         {
             string url = ConfigurationManager.AppSettings["AuthApiUrl"];
-            return await _httpClient.DeleteAsync($"{url}/delete/{Uri.EscapeDataString(email)}");
+            return await _httpClient.DeleteAsync($"{url}/{Uri.EscapeDataString(email)}");
         }
 
         public async Task<HttpResponseMessage> UpdateUser(RegisterViewModel model)
