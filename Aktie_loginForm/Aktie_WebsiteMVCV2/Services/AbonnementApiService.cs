@@ -14,12 +14,12 @@ namespace Aktie_WebsiteMVCV2.Services
             _config = config;
         }
 
-        public async Task<HttpResponseMessage> Subscribe(int kundeId,int kategoriId,int aktiepakkeId)
+        public async Task<HttpResponseMessage> Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             string url = _config["ApiSettings:AbonnementApiUrl"];
 
             return await _httpClient.PostAsync(
-                $"{url}/subscribe?kundeId={kundeId}&kategoriId={kategoriId}&aktiepakkeId={aktiepakkeId}",
+                $"{url}?kundeId={kundeId}&kategoriId={kategoriId}&aktiepakkeId={aktiepakkeId}",
                 null
             );
         }
@@ -29,7 +29,7 @@ namespace Aktie_WebsiteMVCV2.Services
             string url = _config["ApiSettings:AbonnementApiUrl"];
 
             var response = await _httpClient.GetAsync(
-                $"{url}/getByCustomer?kundeId={kundeId}"
+                $"{url}/kunde/{kundeId}"
             );
 
             if (!response.IsSuccessStatusCode)
@@ -43,7 +43,7 @@ namespace Aktie_WebsiteMVCV2.Services
             string url = _config["ApiSettings:AbonnementApiUrl"];
 
             var response = await _httpClient.GetAsync(
-                $"{url}/countByKategori?kategoriId={kategoriId}"
+                $"{url}/kategori/{kategoriId}/antal"
             );
 
             if (!response.IsSuccessStatusCode)

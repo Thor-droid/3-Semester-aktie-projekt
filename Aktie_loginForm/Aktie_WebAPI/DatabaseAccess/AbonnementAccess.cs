@@ -46,9 +46,9 @@ namespace Aktie_WebAPI.DatabaseAccess
                     }
                 }
 
-                // ============================
+                // 
                 // OPTIMISTIC CONCURRENCY
-                // ============================
+                //
                 //
                 // Her bliver optimistic concurrency håndteret.
                 //

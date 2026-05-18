@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aktie_WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/abonnement")]
+    [Route("api/abonnementer")]
     public class AbonnementController : ControllerBase
     {
         private readonly AbonnementLogic service;
@@ -15,7 +15,7 @@ namespace Aktie_WebAPI.Controllers
             this.service = service;
         }
 
-        [HttpPost("subscribe")]
+        [HttpPost]
         public ActionResult<ApiResponse> Subscribe(int kundeId, int kategoriId, int aktiepakkeId)
         {
             bool success = service.Subscribe(kundeId, kategoriId, aktiepakkeId);
@@ -28,7 +28,7 @@ namespace Aktie_WebAPI.Controllers
             return ApiResponse.Ok("Du er nu tilmeldt aktiepakken!");
         }
 
-        [HttpGet("getByCustomer")]
+        [HttpGet("kunde/{kundeId}")]
         public ActionResult<AbonnementResponse> GetByCustomer(int kundeId)
         {
             var kategoriId = service.GetKategoriByCustomer(kundeId);
@@ -39,7 +39,7 @@ namespace Aktie_WebAPI.Controllers
             return new AbonnementResponse(kategoriId.Value);
         }
 
-        [HttpGet("countByKategori")]
+        [HttpGet("kategori/{kategoriId}/antal")]
         public IActionResult CountByKategori(int kategoriId)
         {
             int count = service.CountByKategori(kategoriId);
