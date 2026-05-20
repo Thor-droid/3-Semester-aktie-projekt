@@ -1,5 +1,4 @@
 ﻿using Aktie_WebAPI.DTO;
-using Aktie_WebsiteMVCV2.Models;
 using System.Globalization;
 using System.Net.Http.Json;
 

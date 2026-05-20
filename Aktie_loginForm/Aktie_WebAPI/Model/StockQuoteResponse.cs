@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Aktie_WebsiteMVCV2.Models
+namespace Aktie_WebAPI.Model
 {
     public class StockQuoteResponse
     {

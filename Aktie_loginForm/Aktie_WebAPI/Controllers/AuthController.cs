@@ -45,7 +45,7 @@ namespace Aktie_WebAPI.Controllers
             return Ok(users);
         }
 
-        [HttpDelete("delete/{email}")]
+        [HttpDelete("{email}")]
         public ActionResult DeleteUserByEmail(string email)
         {
             var result = _authLogic.DeleteUserByEmail(email);

@@ -64,18 +64,13 @@ namespace Aktie_WebAPI.DatabaseAccess
                 //
                 // ExecuteNonQuery returnerer antal rækker der blev ændret.
                 //
-                // Hvis rowsAffected == 0 betyder det:
-                // - kategorien var allerede fuld
-                // - eller en anden bruger nåede at tage den sidste plads først
+                // 
                 //
                 // På den måde undgår vi race conditions
                 // uden at låse hele tabellen manuelt.
                 //
-                string updateKategoriSql = @"
-            UPDATE Kategori 
-            SET AntalBrugere = AntalBrugere + 1 
-            WHERE KategoriID = @KategoriID
-            AND AntalBrugere < MaxBrugere";
+                string updateKategoriSql = @"UPDATE Kategori SET AntalBrugere = AntalBrugere + 1 WHERE KategoriID = @KategoriID
+                AND AntalBrugere < MaxBrugere";
 
                 using (SqlCommand cmd = new SqlCommand(updateKategoriSql, conn, transaction))
                 {
@@ -93,9 +88,7 @@ namespace Aktie_WebAPI.DatabaseAccess
                 }
 
                 // Opretter abonnementet
-                string insertAbonnementSql = @"
-            INSERT INTO Abonnement (Dato, KategoriID, KundeID) 
-            OUTPUT INSERTED.AbonnementID
+                string insertAbonnementSql = @" INSERT INTO Abonnement (Dato, KategoriID, KundeID) OUTPUT INSERTED.AbonnementID
             VALUES (GETDATE(), @KategoriID, @KundeID)";
 
                 int abonnementId;
@@ -110,8 +103,7 @@ namespace Aktie_WebAPI.DatabaseAccess
 
                 // Kobler abonnementet sammen med aktiepakken
                 string linkSql = @"
-            INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID) 
-            VALUES (@AktiepakkeID, @AbonnementID)";
+            INSERT INTO AktiepakkeAbonnement (AktiepakkeID, AbonnementID) VALUES (@AktiepakkeID, @AbonnementID)";
 
                 using (SqlCommand cmd = new SqlCommand(linkSql, conn, transaction))
                 {
@@ -138,11 +130,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                SELECT TOP 1 KategoriID
-                FROM Abonnement
-                WHERE KundeID = @KundeID
-                ORDER BY Dato DESC";
+            string sql = @"SELECT TOP 1 KategoriID FROM Abonnement WHERE KundeID = @KundeID ORDER BY Dato DESC";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@KundeID", kundeId);
@@ -160,10 +148,7 @@ namespace Aktie_WebAPI.DatabaseAccess
             using SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = @"
-                SELECT COUNT(*)
-                FROM Abonnement
-                WHERE KategoriID = @KategoriID";
+            string sql = @"SELECT COUNT(*) FROM Abonnement WHERE KategoriID = @KategoriID";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@KategoriID", kategoriId);
